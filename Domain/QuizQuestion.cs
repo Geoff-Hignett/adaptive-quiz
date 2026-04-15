@@ -13,6 +13,7 @@ public class QuizQuestion
     public bool? Correct { get; set; }
     public string? AnswerGiven { get; set; }
 
-    public int TimeTakenMs { get; set; }
-    public int PointsAwarded { get; set; }
+    public int? TimeTakenMs { get; set; }
+    public int? PointsAwarded { get; set; }
+    public int DifficultyAtTime { get; set; }
 }
