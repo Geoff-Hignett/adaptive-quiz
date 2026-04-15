@@ -20,3 +20,8 @@ Thumbs.db
 # Environment
 appsettings.Development.json
 .env
+
+# SQLite
+*.db
+*.db-shm
+*.db-wal

@@ -29,6 +29,16 @@ using (var scope = app.Services.CreateScope())
 
         db.SaveChanges();
     }
+
+    if (!db.Questions.Any())
+    {
+        db.Questions.AddRange(
+            new Question { Text = "Who won the 2018 World Cup?", Difficulty = 1, Type = "MCQ", Data = "{}" },
+            new Question { Text = "Is Messi Argentinian?", Difficulty = 1, Type = "TrueFalse", Data = "{}" }
+        );
+
+        db.SaveChanges();
+    }
 }
 
 // Configure the HTTP request pipeline.

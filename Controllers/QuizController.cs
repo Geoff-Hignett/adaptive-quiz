@@ -1,4 +1,5 @@
-﻿using AdaptiveQuiz.Api.Services;
+﻿using AdaptiveQuiz.Api.Domain;
+using AdaptiveQuiz.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdaptiveQuiz.Api.Controllers;
@@ -29,6 +30,41 @@ public class QuizController : ControllerBase
                 attempt.Id,
                 attempt.StartingLevel
             });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("next")]
+    public async Task<IActionResult> GetNext(int attemptId)
+    {
+        try
+        {
+            var question = await _quizService.GetNextQuestion(attemptId);
+
+            return Ok(new
+            {
+                question.Id,
+                question.Text,
+                question.Type,
+                question.Data
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("answer")]
+    public async Task<IActionResult> SubmitAnswer([FromBody] SubmitAnswerRequest request)
+    {
+        try
+        {
+            var result = await _quizService.SubmitAnswer(request);
+            return Ok(result);
         }
         catch (Exception ex)
         {
