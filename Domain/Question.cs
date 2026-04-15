@@ -1,4 +1,4 @@
-﻿namespace FootballQuiz.Api.Domain;
+﻿namespace AdaptiveQuiz.Api.Domain;
 
 public class Question
 {

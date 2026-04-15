@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace FootballQuiz.Controllers;
+namespace AdaptiveQuiz.Controllers;
 
 [ApiController]
 [Route("api/test")]

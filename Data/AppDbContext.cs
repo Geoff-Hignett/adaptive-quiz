@@ -1,8 +1,8 @@
-﻿using FootballQuiz.Api.Domain;
+﻿using AdaptiveQuiz.Api.Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace FootballQuiz.Api.Data;
+namespace AdaptiveQuiz.Api.Data;
 
 public class AppDbContext : DbContext
 {

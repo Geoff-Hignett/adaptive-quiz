@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace FootballQuiz.Api.Migrations
+namespace AdaptiveQuiz.Api.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -78,8 +78,9 @@ namespace FootballQuiz.Api.Migrations
                     QuestionId = table.Column<int>(type: "INTEGER", nullable: false),
                     Correct = table.Column<bool>(type: "INTEGER", nullable: true),
                     AnswerGiven = table.Column<string>(type: "TEXT", nullable: true),
-                    TimeTakenMs = table.Column<int>(type: "INTEGER", nullable: false),
-                    PointsAwarded = table.Column<int>(type: "INTEGER", nullable: false)
+                    TimeTakenMs = table.Column<int>(type: "INTEGER", nullable: true),
+                    PointsAwarded = table.Column<int>(type: "INTEGER", nullable: true),
+                    DifficultyAtTime = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
