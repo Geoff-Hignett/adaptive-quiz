@@ -7,7 +7,7 @@ public class QuizAttempt
 
     public int UserId { get; set; }
     public User? User { get; set; }
-    public List<QuizQuestion> Questions { get; set; } = [];
+    public List<QuizAttemptQuestion> Questions { get; set; } = [];
 
     public DateTime StartedAt { get; set; }
     public DateTime? CompletedAt { get; set; }

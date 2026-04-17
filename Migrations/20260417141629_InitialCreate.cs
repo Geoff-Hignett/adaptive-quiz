@@ -29,6 +29,20 @@ namespace AdaptiveQuiz.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserQuestionHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    QuestionId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserQuestionHistories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -50,6 +64,7 @@ namespace AdaptiveQuiz.Api.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    CurrentQuestionId = table.Column<int>(type: "INTEGER", nullable: true),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false),
                     StartedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CompletedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
@@ -69,7 +84,7 @@ namespace AdaptiveQuiz.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QuizQuestions",
+                name: "QuizAttemptQuestions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -84,15 +99,15 @@ namespace AdaptiveQuiz.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuizQuestions", x => x.Id);
+                    table.PrimaryKey("PK_QuizAttemptQuestions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_QuizQuestions_Questions_QuestionId",
+                        name: "FK_QuizAttemptQuestions_Questions_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_QuizQuestions_QuizAttempts_QuizAttemptId",
+                        name: "FK_QuizAttemptQuestions_QuizAttempts_QuizAttemptId",
                         column: x => x.QuizAttemptId,
                         principalTable: "QuizAttempts",
                         principalColumn: "Id",
@@ -100,26 +115,29 @@ namespace AdaptiveQuiz.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuizAttempts_UserId",
-                table: "QuizAttempts",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_QuizQuestions_QuestionId",
-                table: "QuizQuestions",
+                name: "IX_QuizAttemptQuestions_QuestionId",
+                table: "QuizAttemptQuestions",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuizQuestions_QuizAttemptId",
-                table: "QuizQuestions",
+                name: "IX_QuizAttemptQuestions_QuizAttemptId",
+                table: "QuizAttemptQuestions",
                 column: "QuizAttemptId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuizAttempts_UserId",
+                table: "QuizAttempts",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "QuizQuestions");
+                name: "QuizAttemptQuestions");
+
+            migrationBuilder.DropTable(
+                name: "UserQuestionHistories");
 
             migrationBuilder.DropTable(
                 name: "Questions");

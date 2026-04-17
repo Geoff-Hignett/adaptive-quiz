@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdaptiveQuiz.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260415133807_AddUserQuestionHistory")]
-    partial class AddUserQuestionHistory
+    [Migration("20260417141629_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,6 +62,9 @@ namespace AdaptiveQuiz.Api.Migrations
                     b.Property<int>("CurrentLevel")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("CurrentQuestionId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Score")
                         .HasColumnType("INTEGER");
 
@@ -81,7 +84,7 @@ namespace AdaptiveQuiz.Api.Migrations
                     b.ToTable("QuizAttempts");
                 });
 
-            modelBuilder.Entity("AdaptiveQuiz.Api.Domain.QuizQuestion", b =>
+            modelBuilder.Entity("AdaptiveQuiz.Api.Domain.QuizAttemptQuestion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -114,7 +117,7 @@ namespace AdaptiveQuiz.Api.Migrations
 
                     b.HasIndex("QuizAttemptId");
 
-                    b.ToTable("QuizQuestions");
+                    b.ToTable("QuizAttemptQuestions");
                 });
 
             modelBuilder.Entity("AdaptiveQuiz.Api.Domain.User", b =>
@@ -170,7 +173,7 @@ namespace AdaptiveQuiz.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AdaptiveQuiz.Api.Domain.QuizQuestion", b =>
+            modelBuilder.Entity("AdaptiveQuiz.Api.Domain.QuizAttemptQuestion", b =>
                 {
                     b.HasOne("AdaptiveQuiz.Api.Domain.Question", "Question")
                         .WithMany()

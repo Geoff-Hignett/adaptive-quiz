@@ -7,7 +7,7 @@ namespace AdaptiveQuiz.Api.Services;
 public class QuizService
 {
     private readonly AppDbContext _context;
-    const int MaxQuestions = 10;
+    const int MaxQuestions = 3;
 
     public QuizService(AppDbContext context)
     {
@@ -132,10 +132,10 @@ public class QuizService
         if (question == null)
             throw new Exception("Question not found");
 
-        // Check correctness (simple for now)
-        bool correct = question.Data.Contains(request.Answer); // placeholder logic
+        // Check correctness (temporary logic)
+        bool correct = question.Data == request.Answer;
 
-        // Basic scoring
+        // Scoring
         int basePoints = correct ? 100 : 0;
         int timeBonus = Math.Max(0, 1000 - request.TimeTakenMs);
         int totalPoints = basePoints + timeBonus;
@@ -150,8 +150,8 @@ public class QuizService
 
         attempt.CurrentLevel = Math.Max(1, Math.Min(10, attempt.CurrentLevel));
 
-        // Save QuizQuestion
-        var quizQuestion = new QuizQuestion
+        // Save answered question
+        var quizQuestion = new QuizAttemptQuestion
         {
             QuizAttemptId = attempt.Id,
             QuestionId = question.Id,
@@ -162,17 +162,9 @@ public class QuizService
             DifficultyAtTime = difficultyAtTime
         };
 
-        _context.QuizQuestions.Add(quizQuestion);
+        _context.QuizAttemptQuestions.Add(quizQuestion);
 
-        var questionCount = await _context.QuizQuestions
-            .CountAsync(q => q.QuizAttemptId == attempt.Id);
-
-        if (questionCount >= 10)
-        {
-            attempt.CompletedAt = DateTime.UtcNow;
-        }
-
-        // Track history (prevents repeats later)
+        // Track history
         _context.UserQuestionHistories.Add(new UserQuestionHistory
         {
             UserId = attempt.UserId,
@@ -182,7 +174,24 @@ public class QuizService
         // Update score
         attempt.Score += totalPoints;
 
+        // SAVE EVERYTHING FIRST
         await _context.SaveChangesAsync();
+
+        // NOW count (includes this question)
+        var questionCount = await _context.QuizAttemptQuestions
+            .CountAsync(q => q.QuizAttemptId == attempt.Id);
+
+        Console.WriteLine($"[DEBUG] QuestionCount AFTER SAVE: {questionCount}");
+
+        // Completion check
+        if (questionCount >= MaxQuestions)
+        {
+            Console.WriteLine("[DEBUG] Setting CompletedAt NOW");
+
+            attempt.CompletedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync(); // persist completion
+        }
 
         return new
         {
@@ -190,6 +199,47 @@ public class QuizService
             totalPoints,
             newLevel = attempt.CurrentLevel,
             isComplete = attempt.CompletedAt != null
+        };
+    }
+
+    public async Task<object> GetResults(int attemptId)
+    {
+        var attempt = await _context.QuizAttempts
+            .Include(a => a.Questions)
+            .ThenInclude(q => q.Question)
+            .FirstOrDefaultAsync(a => a.Id == attemptId);
+
+        if (attempt == null)
+            throw new Exception("Quiz not found");
+
+        if (attempt.CompletedAt == null)
+            throw new Exception("Quiz not completed yet");
+
+        var totalQuestions = attempt.Questions.Count;
+        var correctAnswers = attempt.Questions.Count(q => q.Correct == true);
+
+        var accuracy = totalQuestions == 0
+            ? 0
+            : (double)correctAnswers / totalQuestions * 100;
+
+        var breakdown = attempt.Questions.Select(q => new
+        {
+            q.QuestionId,
+            q.Question!.Text,
+            q.Correct,
+            q.AnswerGiven,
+            q.PointsAwarded,
+            q.DifficultyAtTime
+        });
+
+        return new
+        {
+            attempt.Id,
+            attempt.Score,
+            totalQuestions,
+            correctAnswers,
+            accuracy,
+            breakdown
         };
     }
 }

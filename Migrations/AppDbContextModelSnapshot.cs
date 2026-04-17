@@ -81,7 +81,7 @@ namespace AdaptiveQuiz.Api.Migrations
                     b.ToTable("QuizAttempts");
                 });
 
-            modelBuilder.Entity("AdaptiveQuiz.Api.Domain.QuizQuestion", b =>
+            modelBuilder.Entity("AdaptiveQuiz.Api.Domain.QuizAttemptQuestion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -114,7 +114,7 @@ namespace AdaptiveQuiz.Api.Migrations
 
                     b.HasIndex("QuizAttemptId");
 
-                    b.ToTable("QuizQuestions");
+                    b.ToTable("QuizAttemptQuestions");
                 });
 
             modelBuilder.Entity("AdaptiveQuiz.Api.Domain.User", b =>
@@ -170,7 +170,7 @@ namespace AdaptiveQuiz.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AdaptiveQuiz.Api.Domain.QuizQuestion", b =>
+            modelBuilder.Entity("AdaptiveQuiz.Api.Domain.QuizAttemptQuestion", b =>
                 {
                     b.HasOne("AdaptiveQuiz.Api.Domain.Question", "Question")
                         .WithMany()

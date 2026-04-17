@@ -71,4 +71,18 @@ public class QuizController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpGet("results")]
+    public async Task<IActionResult> GetResults(int attemptId)
+    {
+        try
+        {
+            var result = await _quizService.GetResults(attemptId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

@@ -1,6 +1,6 @@
 ﻿namespace AdaptiveQuiz.Api.Domain;
 
-public class QuizQuestion
+public class QuizAttemptQuestion
 {
     public int Id { get; set; }
 
