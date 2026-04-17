@@ -1,6 +1,7 @@
 ﻿using AdaptiveQuiz.Api.Data;
 using AdaptiveQuiz.Api.Domain;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace AdaptiveQuiz.Api.Services;
 
@@ -133,7 +134,17 @@ public class QuizService
             throw new Exception("Question not found");
 
         // Check correctness (temporary logic)
-        bool correct = question.Data == request.Answer;
+        var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
+
+        if (data == null)
+            throw new Exception("Invalid question data");
+
+        // validate answer exists in options (optional but good)
+        if (!data.Options.Contains(request.Answer))
+            throw new Exception("Invalid answer option");
+
+        bool correct = data.CorrectAnswer
+            .Equals(request.Answer?.Trim(), StringComparison.OrdinalIgnoreCase);
 
         // Scoring
         int basePoints = correct ? 100 : 0;
@@ -220,7 +231,7 @@ public class QuizService
 
         var accuracy = totalQuestions == 0
             ? 0
-            : (double)correctAnswers / totalQuestions * 100;
+            : Math.Round((double)correctAnswers / totalQuestions * 100, 2);
 
         var breakdown = attempt.Questions.Select(q => new
         {

@@ -1,6 +1,7 @@
 ﻿using AdaptiveQuiz.Api.Domain;
 using AdaptiveQuiz.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace AdaptiveQuiz.Api.Controllers;
 
@@ -43,13 +44,14 @@ public class QuizController : ControllerBase
         try
         {
             var question = await _quizService.GetNextQuestion(attemptId);
+            var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
 
             return Ok(new
             {
                 question.Id,
                 question.Text,
                 question.Type,
-                question.Data
+                options = data?.Options
             });
         }
         catch (Exception ex)
