@@ -1,7 +1,9 @@
-using AdaptiveQuiz.Api.Data;
+﻿using AdaptiveQuiz.Api.Data;
 using AdaptiveQuiz.Api.Domain;
 using AdaptiveQuiz.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,27 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=adaptivequiz.db"));
 builder.Services.AddScoped<QuizService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://kiccvhqmcsyvmbucpstp.supabase.co/auth/v1";
+        options.Audience = "authenticated";
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            NameClaimType = "email"
+        };
+    });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
 
@@ -154,7 +177,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowAll");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

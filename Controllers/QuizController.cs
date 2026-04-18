@@ -1,6 +1,9 @@
-﻿using AdaptiveQuiz.Api.Domain;
+﻿using AdaptiveQuiz.Api.Data;
+using AdaptiveQuiz.Api.Domain;
 using AdaptiveQuiz.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace AdaptiveQuiz.Api.Controllers;
@@ -11,20 +14,26 @@ public class QuizController : ControllerBase
 {
     private readonly QuizService _quizService;
 
-    public QuizController(QuizService quizService)
+    public QuizController(QuizService quizService, AppDbContext context)
     {
         _quizService = quizService;
     }
 
+    [Authorize]
     [HttpPost("start")]
     public async Task<IActionResult> StartQuiz()
     {
-        // Fake user for now
-        int userId = 1;
-
         try
         {
-            var attempt = await _quizService.StartQuiz(userId);
+            // Extract email from Supabase JWT
+            var userEmail = User.Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userEmail))
+                return Unauthorized("User email not found in token");
+
+            // Delegate to service
+            var attempt = await _quizService.StartQuizForUser(userEmail);
 
             return Ok(new
             {

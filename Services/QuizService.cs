@@ -50,6 +50,27 @@ public class QuizService
         return attempt;
     }
 
+    public async Task<QuizAttempt> StartQuizForUser(string email)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == email);
+
+        if (user == null)
+        {
+            user = new User
+            {
+                Email = email,
+                Role = "User",
+                CurrentLevel = 1
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+
+        return await StartQuiz(user.Id);
+    }
+
     public async Task<Question> GetNextQuestion(int attemptId)
     {
         var attempt = await _context.QuizAttempts
@@ -133,13 +154,13 @@ public class QuizService
         if (question == null)
             throw new Exception("Question not found");
 
-        // Check correctness (temporary logic)
+        // Determine correctness using question data (MCQ-based)
         var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
 
         if (data == null)
             throw new Exception("Invalid question data");
 
-        // validate answer exists in options (optional but good)
+        // validate answer exists in options 
         if (!data.Options.Contains(request.Answer))
             throw new Exception("Invalid answer option");
 
