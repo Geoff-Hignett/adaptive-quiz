@@ -50,28 +50,18 @@ public class QuizService
         return attempt;
     }
 
-    public async Task<QuizAttempt> StartQuizForUser(string email)
+    public async Task<QuizAttempt> StartQuizForUser(int userId)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == email);
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
-        {
-            user = new User
-            {
-                Email = email,
-                Role = "User",
-                CurrentLevel = 1
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-        }
+            throw new Exception("User not found");
 
         return await StartQuiz(user.Id);
     }
 
-    public async Task<Question> GetNextQuestion(int attemptId)
+    public async Task<Question> GetNextQuestion(int attemptId, int currentUserId)
     {
         var attempt = await _context.QuizAttempts
             .Include(a => a.Questions)
@@ -79,6 +69,9 @@ public class QuizService
 
         if (attempt == null)
             throw new Exception("Quiz not found");
+
+        if (attempt.UserId != currentUserId)
+            throw new Exception("Unauthorized access");
 
         // Already completed
         if (attempt.CompletedAt != null)
@@ -135,13 +128,16 @@ public class QuizService
         return question;
     }
 
-    public async Task<object> SubmitAnswer(SubmitAnswerRequest request)
+    public async Task<object> SubmitAnswer(SubmitAnswerRequest request, int currentUserId)
     {
         var attempt = await _context.QuizAttempts
             .FirstOrDefaultAsync(a => a.Id == request.AttemptId);
 
         if (attempt == null)
             throw new Exception("Quiz not found");
+
+        if (attempt.UserId != currentUserId)
+            throw new Exception("Unauthorized access");
 
         if (attempt.CurrentQuestionId != request.QuestionId)
             throw new Exception("Invalid question flow");
@@ -234,7 +230,7 @@ public class QuizService
         };
     }
 
-    public async Task<object> GetResults(int attemptId)
+    public async Task<object> GetResults(int attemptId, int currentUserId)
     {
         var attempt = await _context.QuizAttempts
             .Include(a => a.Questions)
@@ -243,6 +239,9 @@ public class QuizService
 
         if (attempt == null)
             throw new Exception("Quiz not found");
+
+        if (attempt.UserId != currentUserId)
+            throw new Exception("Unauthorized access");
 
         if (attempt.CompletedAt == null)
             throw new Exception("Quiz not completed yet");
@@ -273,5 +272,16 @@ public class QuizService
             accuracy,
             breakdown
         };
+    }
+
+    public async Task<int> GetUserIdFromEmail(string email)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == email);
+
+        if (user == null)
+            throw new Exception("User not found");
+
+        return user.Id;
     }
 }

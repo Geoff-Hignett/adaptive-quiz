@@ -1,5 +1,4 @@
-﻿using AdaptiveQuiz.Api.Data;
-using AdaptiveQuiz.Api.Domain;
+﻿using AdaptiveQuiz.Api.Domain;
 using AdaptiveQuiz.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +12,7 @@ namespace AdaptiveQuiz.Api.Controllers;
 public class QuizController : ControllerBase
 {
     private readonly QuizService _quizService;
-
-    public QuizController(QuizService quizService, AppDbContext context)
+    public QuizController(QuizService quizService)
     {
         _quizService = quizService;
     }
@@ -25,15 +23,8 @@ public class QuizController : ControllerBase
     {
         try
         {
-            // Extract email from Supabase JWT
-            var userEmail = User.Claims
-                .FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-
-            if (string.IsNullOrEmpty(userEmail))
-                return Unauthorized("User email not found in token");
-
-            // Delegate to service
-            var attempt = await _quizService.StartQuizForUser(userEmail);
+            var userId = await GetCurrentUserId();
+            var attempt = await _quizService.StartQuizForUser(userId);
 
             return Ok(new
             {
@@ -47,12 +38,14 @@ public class QuizController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("next")]
     public async Task<IActionResult> GetNext(int attemptId)
     {
         try
         {
-            var question = await _quizService.GetNextQuestion(attemptId);
+            var userId = await GetCurrentUserId();
+            var question = await _quizService.GetNextQuestion(attemptId, userId);
             var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
 
             return Ok(new
@@ -69,12 +62,14 @@ public class QuizController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("answer")]
     public async Task<IActionResult> SubmitAnswer([FromBody] SubmitAnswerRequest request)
     {
         try
         {
-            var result = await _quizService.SubmitAnswer(request);
+            var userId = await GetCurrentUserId();
+            var result = await _quizService.SubmitAnswer(request, userId);
             return Ok(result);
         }
         catch (Exception ex)
@@ -83,12 +78,14 @@ public class QuizController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("results")]
     public async Task<IActionResult> GetResults(int attemptId)
     {
         try
         {
-            var result = await _quizService.GetResults(attemptId);
+            var userId = await GetCurrentUserId();
+            var result = await _quizService.GetResults(attemptId, userId);
             return Ok(result);
         }
         catch (Exception ex)
@@ -96,4 +93,15 @@ public class QuizController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    private async Task<int> GetCurrentUserId()
+    {
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(userEmail))
+            throw new Exception("User email not found in token");
+
+        return await _quizService.GetUserIdFromEmail(userEmail);
+    }
+
+
 }

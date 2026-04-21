@@ -42,18 +42,6 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    if (!db.Users.Any())
-    {
-        db.Users.Add(new User
-        {
-            Email = "test@test.com",
-            Role = "User",
-            CurrentLevel = 1
-        });
-
-        db.SaveChanges();
-    }
-
     if (!db.Questions.Any())
     {
         var questions = new List<Question>
