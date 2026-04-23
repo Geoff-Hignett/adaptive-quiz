@@ -23,8 +23,12 @@ public class QuizController : ControllerBase
     {
         try
         {
-            var userId = await GetCurrentUserId();
-            var attempt = await _quizService.StartQuizForUser(userId);
+            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userEmail))
+                return Unauthorized("User email not found in token");
+
+            var attempt = await _quizService.StartQuizForUser(userEmail);
 
             return Ok(new
             {
@@ -102,6 +106,5 @@ public class QuizController : ControllerBase
 
         return await _quizService.GetUserIdFromEmail(userEmail);
     }
-
 
 }

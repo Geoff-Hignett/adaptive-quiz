@@ -9,10 +9,32 @@ public class QuizService
 {
     private readonly AppDbContext _context;
     const int MaxQuestions = 3;
+    bool isDev = true;
 
     public QuizService(AppDbContext context)
     {
         _context = context;
+    }
+
+    public async Task<QuizAttempt> StartQuizForUser(string email)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == email);
+
+        if (user == null)
+        {
+            user = new User
+            {
+                Email = email,
+                Role = "User",
+                CurrentLevel = 1
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+
+        return await StartQuiz(user.Id);
     }
 
     public async Task<QuizAttempt> StartQuiz(int userId)
@@ -23,7 +45,7 @@ public class QuizService
             throw new Exception("User not found");
 
         // Monthly restriction
-        if (user.Role == "User" && user.LastQuizAt.HasValue)
+        if (user.Role == "User" && user.LastQuizAt.HasValue && !isDev)
         {
             var now = DateTime.UtcNow;
             var last = user.LastQuizAt.Value;
@@ -48,17 +70,6 @@ public class QuizService
         await _context.SaveChangesAsync();
 
         return attempt;
-    }
-
-    public async Task<QuizAttempt> StartQuizForUser(int userId)
-    {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
-
-        if (user == null)
-            throw new Exception("User not found");
-
-        return await StartQuiz(user.Id);
     }
 
     public async Task<Question> GetNextQuestion(int attemptId, int currentUserId)
@@ -102,6 +113,11 @@ public class QuizService
             .Select(h => h.QuestionId)
             .ToListAsync();
 
+        if (isDev)
+        {
+            seenQuestionIds.Clear();
+        }
+
         // Questions already used in this attempt
         var usedInAttempt = attempt.Questions
             .Select(q => q.QuestionId)
@@ -116,6 +132,10 @@ public class QuizService
         var question = questions
             .OrderBy(q => Guid.NewGuid())
             .FirstOrDefault();
+
+        Console.WriteLine($"Level: {level}");
+        Console.WriteLine($"Seen count: {seenQuestionIds.Count}");
+        Console.WriteLine($"Used in attempt: {usedInAttempt.Count}");
 
         if (question == null)
             throw new Exception("No questions available");
