@@ -97,6 +97,48 @@ public class QuizController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [Authorize]
+    [HttpPut("display-name")]
+    public async Task<IActionResult> UpdateDisplayName([FromBody] UpdateDisplayNameRequest request)
+    {
+        var userId = await GetCurrentUserId();
+
+        var result = await _quizService.UpdateDisplayName(userId, request.DisplayName);
+
+        return Ok(result);
+    }
+
+    [HttpGet("leaderboard")]
+    public async Task<IActionResult> GetLeaderboard()
+    {
+        try
+        {
+            var result = await _quizService.GetLeaderboard();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpGet("stats")]
+    public async Task<IActionResult> GetStats()
+    {
+        try
+        {
+            var userId = await GetCurrentUserId();
+            var result = await _quizService.GetUserStats(userId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     private async Task<int> GetCurrentUserId()
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
@@ -106,5 +148,7 @@ public class QuizController : ControllerBase
 
         return await _quizService.GetUserIdFromEmail(userEmail);
     }
+
+
 
 }

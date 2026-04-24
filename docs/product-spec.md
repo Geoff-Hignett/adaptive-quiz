@@ -126,6 +126,7 @@ Users can view:
 - Performance by category
 - Accuracy rate
 - Progression of difficulty level over time
+- The public leaderboard with various metrics/record holders
 
 ---
 
