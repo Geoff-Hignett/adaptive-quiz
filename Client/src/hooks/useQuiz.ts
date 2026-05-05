@@ -35,9 +35,14 @@ export function useResults(attemptId: number | null) {
 }
 
 export function useMe() {
-    return useQuery<MeResponse>({
+    return useQuery({
         queryKey: ["me"],
-        queryFn: () => apiFetch<MeResponse>("/me"),
+        queryFn: () => {
+            console.log("[useMe] fetching");
+            return apiFetch<MeResponse>("/me");
+        },
+        staleTime: 1000 * 60 * 5,
+        refetchOnWindowFocus: false,
     });
 }
 

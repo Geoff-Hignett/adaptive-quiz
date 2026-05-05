@@ -1,46 +1,89 @@
-import { useEffect, useState } from "react";
-import { supabase } from "./lib/supabase";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import QuizPage from "./pages/QuizPage";
 import Home from "./pages/Home";
-import ProfilePage from "./pages/ProfilePage";
+import AboutPage from "./pages/AboutPage";
+import QuizPage from "./pages/QuizPage";
 import ResultsPage from "./pages/ResultsPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
-import Header from "./components/Header";
+import ProfilePage from "./pages/ProfilePage";
+import StatsPage from "./pages/StatsPage";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import Layout from "./components/Layout";
 
 export default function App() {
-    const [session, setSession] = useState<any>(null);
-
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data }) => {
-            setSession(data.session);
-        });
-
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-        });
-
-        return () => {
-            listener.subscription.unsubscribe();
-        };
-    }, []);
-
     return (
         <BrowserRouter>
-            {!session ? (
-                <Home />
-            ) : (
-                <>
-                    <Header />
-                    <Routes>
-                        <Route path="/" element={<QuizPage />} />
-                        <Route path="/profile" element={<ProfilePage />} />
-                        <Route path="/results" element={<ResultsPage />} />
-                        <Route path="/leaderboard" element={<LeaderboardPage />} />
-                    </Routes>
-                </>
-            )}
+            <Routes>
+                {/* Public */}
+                <Route path="/" element={<Home />} />
+
+                {/* Protected */}
+                <Route
+                    path="/about"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <AboutPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/quiz"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <QuizPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/results"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <ResultsPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/leaderboard"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <LeaderboardPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <ProfilePage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/stats"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <StatsPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+            </Routes>
         </BrowserRouter>
     );
 }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdaptiveQuiz.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260424090358_InitialCreate")]
+    [Migration("20260505131439_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -148,6 +148,9 @@ namespace AdaptiveQuiz.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

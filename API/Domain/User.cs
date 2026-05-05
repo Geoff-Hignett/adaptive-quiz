@@ -1,5 +1,8 @@
-﻿namespace AdaptiveQuiz.Api.Domain;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace AdaptiveQuiz.Api.Domain;
+
+[Index(nameof(Email), IsUnique = true)]
 public class User
 {
     public int Id { get; set; }

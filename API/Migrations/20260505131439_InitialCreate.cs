@@ -130,6 +130,12 @@ namespace AdaptiveQuiz.Api.Migrations
                 name: "IX_QuizAttempts_UserId",
                 table: "QuizAttempts",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
         }
 
         /// <inheritdoc />

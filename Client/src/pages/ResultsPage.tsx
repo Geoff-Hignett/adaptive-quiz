@@ -25,28 +25,26 @@ export default function ResultsPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
-            <div className="max-w-md w-full space-y-6 text-center">
-                <h1 className="text-3xl font-bold">Results</h1>
+        <div className="space-y-6 text-center">
+            <h1 className="text-3xl font-bold">Results</h1>
 
-                <div className="text-xl">
-                    Score: <span className="font-semibold">{data.score}</span>
-                </div>
-
-                <div>Accuracy: {data.accuracy}%</div>
-
-                <div>
-                    Correct: {data.correctAnswers} / {data.totalQuestions}
-                </div>
-
-                <Link to="/profile" className="block w-full text-center border border-gray-600 py-2 rounded-lg">
-                    Profile
-                </Link>
-
-                <Link to="/leaderboard" className="block w-full text-center border border-gray-600 py-2 rounded-lg">
-                    View Leaderboard
-                </Link>
+            <div className="text-xl">
+                Score: <span className="font-semibold">{data.score}</span>
             </div>
+
+            <div>Accuracy: {data.accuracy}%</div>
+
+            <div>
+                Correct: {data.correctAnswers} / {data.totalQuestions}
+            </div>
+
+            <Link to="/profile" className="block w-full text-center border border-gray-600 py-2 rounded-lg">
+                Profile
+            </Link>
+
+            <Link to="/leaderboard" className="block w-full text-center border border-gray-600 py-2 rounded-lg">
+                View Leaderboard
+            </Link>
         </div>
     );
 }

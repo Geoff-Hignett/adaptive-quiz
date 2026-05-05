@@ -1,0 +1,13 @@
+import Header from "./Header";
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="min-h-screen bg-gray-950 text-white">
+            <Header />
+
+            <div className="flex items-center justify-center p-6">
+                <div className="w-full max-w-md">{children}</div>
+            </div>
+        </div>
+    );
+}
