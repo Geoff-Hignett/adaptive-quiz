@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useStartQuiz, useNextQuestion, useAnswer } from "../hooks/useQuiz";
+import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -11,6 +12,7 @@ export default function QuizPage() {
     const startQuiz = useStartQuiz();
     const answerMutation = useAnswer();
     const navigate = useNavigate();
+    const { displayName } = useUser();
 
     const { data: question, isLoading, isError, refetch } = useNextQuestion(attemptId);
 
@@ -51,6 +53,11 @@ export default function QuizPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
             <div className="w-full max-w-md space-y-6">
+                {displayName && (
+                    <div className="text-center text-gray-300">
+                        Hi, <span className="font-semibold text-white">{displayName}</span>
+                    </div>
+                )}
                 {/* Start */}
                 {!attemptId && (
                     <>

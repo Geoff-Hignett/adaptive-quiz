@@ -99,6 +99,19 @@ public class QuizController : ControllerBase
     }
 
     [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> Me()
+    {
+        var userId = await GetCurrentUserId();
+        var user = await _quizService.GetUser(userId);
+
+        return Ok(new
+        {
+            user.DisplayName
+        });
+    }
+
+    [Authorize]
     [HttpPut("display-name")]
     public async Task<IActionResult> UpdateDisplayName([FromBody] UpdateDisplayNameRequest request)
     {
@@ -148,7 +161,4 @@ public class QuizController : ControllerBase
 
         return await _quizService.GetUserIdFromEmail(userEmail);
     }
-
-
-
 }

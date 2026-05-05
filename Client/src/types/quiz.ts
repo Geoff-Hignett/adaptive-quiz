@@ -19,6 +19,10 @@ export type ResultsResponse = {
     accuracy: number;
 };
 
+export type MeResponse = {
+    displayName: string;
+};
+
 export type LeaderboardEntry = {
     displayName: string;
     totalScore: number;

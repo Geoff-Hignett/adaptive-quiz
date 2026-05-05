@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "../api/client";
-import type { Question, AnswerResponse, ResultsResponse, LeaderboardEntry, StatsResponse } from "../types/quiz";
+import type { Question, AnswerResponse, ResultsResponse, MeResponse, LeaderboardEntry, StatsResponse } from "../types/quiz";
 
 export function useStartQuiz() {
     return useMutation({
@@ -34,6 +34,13 @@ export function useResults(attemptId: number | null) {
     });
 }
 
+export function useMe() {
+    return useQuery<MeResponse>({
+        queryKey: ["me"],
+        queryFn: () => apiFetch<MeResponse>("/me"),
+    });
+}
+
 export function useLeaderboard() {
     return useQuery<LeaderboardEntry[]>({
         queryKey: ["leaderboard"],
@@ -49,11 +56,16 @@ export function useStats() {
 }
 
 export function useUpdateDisplayName() {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: (displayName: string) =>
             apiFetch<void>("/display-name", {
                 method: "PUT",
                 body: JSON.stringify({ displayName }),
             }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["me"] });
+        },
     });
 }

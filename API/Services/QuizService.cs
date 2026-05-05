@@ -336,6 +336,15 @@ public class QuizService
         return user.Id;
     }
 
+    public async Task<User> GetUser(int userId)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+            throw new Exception("User not found");
+
+        return user;
+    }
+
     public async Task<object> UpdateDisplayName(int userId, string displayName)
     {
         if (string.IsNullOrWhiteSpace(displayName))
