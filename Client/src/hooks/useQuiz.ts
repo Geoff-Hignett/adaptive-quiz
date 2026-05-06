@@ -31,6 +31,7 @@ export function useResults(attemptId: number | null) {
         queryKey: ["results", attemptId],
         queryFn: () => apiFetch<ResultsResponse>(`/results?attemptId=${attemptId}`),
         enabled: !!attemptId,
+        staleTime: Infinity,
     });
 }
 
@@ -41,7 +42,7 @@ export function useMe() {
             console.log("[useMe] fetching");
             return apiFetch<MeResponse>("/me");
         },
-        staleTime: 1000 * 60 * 5,
+        staleTime: 1000 * 60 * 5, // 5 minutes
         refetchOnWindowFocus: false,
     });
 }
@@ -50,6 +51,7 @@ export function useLeaderboard() {
     return useQuery<LeaderboardEntry[]>({
         queryKey: ["leaderboard"],
         queryFn: () => apiFetch<LeaderboardEntry[]>("/leaderboard"),
+        staleTime: 1000 * 30, // 30 seconds,
     });
 }
 
@@ -57,6 +59,7 @@ export function useStats() {
     return useQuery<StatsResponse>({
         queryKey: ["stats"],
         queryFn: () => apiFetch<StatsResponse>("/stats"),
+        staleTime: 1000 * 60 * 30, // 30 minutes
     });
 }
 

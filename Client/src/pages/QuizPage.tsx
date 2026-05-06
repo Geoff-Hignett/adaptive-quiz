@@ -3,6 +3,7 @@ import { useStartQuiz, useNextQuestion, useAnswer, useMe } from "../hooks/useQui
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { SparklesIcon, LockClosedIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function QuizPage() {
     const [attemptId, setAttemptId] = useState<number | null>(null);
@@ -13,6 +14,7 @@ export default function QuizPage() {
     const startQuiz = useStartQuiz();
     const answerMutation = useAnswer();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const { displayName } = useUser();
     const { data: me } = useMe();
@@ -41,6 +43,10 @@ export default function QuizPage() {
         setStartTime(0);
 
         if (res.isComplete) {
+            // invalidate everything affected by quiz completion
+            queryClient.invalidateQueries({ queryKey: ["stats"] });
+            queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+            queryClient.invalidateQueries({ queryKey: ["me"] });
             navigate("/results", { state: { attemptId } });
         } else {
             refetch();
