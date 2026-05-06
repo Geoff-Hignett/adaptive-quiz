@@ -7,8 +7,8 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export default function QuizPage() {
     const [attemptId, setAttemptId] = useState<number | null>(null);
-    const [selected, setSelected] = useState<string>("");
-    const [startTime, setStartTime] = useState<number>(0);
+    const [selected, setSelected] = useState("");
+    const [startTime, setStartTime] = useState(0);
     const [dismissed, setDismissed] = useState(false);
 
     const startQuiz = useStartQuiz();
