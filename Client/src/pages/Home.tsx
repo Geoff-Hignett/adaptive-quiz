@@ -44,7 +44,7 @@ export default function Home() {
     if (loading) return null;
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
+        <div className="min-h-screen flex items-center justify-center bg-gray-950 px-3 py-6 text-white sm:px-6">
             <div className="w-full max-w-md space-y-6 text-center">
                 <h1 className="text-3xl font-bold">Adaptive Quiz</h1>
 

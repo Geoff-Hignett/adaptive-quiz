@@ -5,9 +5,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="min-h-screen bg-gray-950 text-white">
             <Header />
 
-            <div className="flex items-center justify-center p-6">
-                <div className="w-full max-w-md">{children}</div>
-            </div>
+            <main className="px-3 py-4 sm:px-6 sm:py-6">
+                <div className="mx-auto w-full max-w-md">{children}</div>
+            </main>
         </div>
     );
 }
