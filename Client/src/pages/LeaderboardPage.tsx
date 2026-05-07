@@ -1,5 +1,4 @@
 import { useLeaderboard } from "../hooks/useQuiz";
-import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 
 export default function LeaderboardPage() {
@@ -12,16 +11,18 @@ export default function LeaderboardPage() {
 
             {isLoading && <p className="text-center text-gray-400">Loading...</p>}
 
+            {data && data.length === 0 && <p className="text-center text-gray-400">No leaderboard entries yet.</p>}
+
             {isError && <p className="text-center text-red-400">Failed to load leaderboard</p>}
 
             {data && (
                 <div className="space-y-2">
-                    {data.map((entry, index) => (
+                    {data.map((entry) => (
                         <div
-                            key={index}
+                            key={entry.userId}
                             className={`flex justify-between p-3 rounded-lg ${entry.displayName === displayName ? "bg-green-600" : "bg-gray-800"}`}>
                             <div>
-                                <span className="text-gray-400 mr-2">#{index + 1}</span>
+                                <span className="text-gray-400 mr-2">#{entry.rank}</span>
                                 {entry.displayName}
                             </div>
 
@@ -30,10 +31,6 @@ export default function LeaderboardPage() {
                     ))}
                 </div>
             )}
-
-            <Link to="/quiz" className="block w-full text-center bg-white text-black py-3 rounded-lg font-semibold">
-                Back
-            </Link>
         </div>
     );
 }

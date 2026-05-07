@@ -4,7 +4,7 @@ import type { Question, AnswerResponse, ResultsResponse, MeResponse, Leaderboard
 
 export function useStartQuiz() {
     return useMutation({
-        mutationFn: () => apiFetch<{ id: number }>("/start", { method: "POST" }),
+        mutationFn: () => apiFetch<{ id: number; startingLevel: number }>("/start", { method: "POST" }),
     });
 }
 

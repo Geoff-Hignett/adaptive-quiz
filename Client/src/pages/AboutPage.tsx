@@ -4,21 +4,25 @@ export default function AboutPage() {
     return (
         <div className="space-y-10">
             {/* Title */}
-            <div className="text-center space-y-2">
-                <h1 className="text-3xl font-bold">How It Works</h1>
-                <p className="text-gray-400">A monthly adaptive quiz that adjusts to your skill and rewards speed.</p>
+            <div className="space-y-2 text-center">
+                <h1 className="text-2xl font-bold sm:text-3xl">How It Works</h1>
+
+                <p className="mx-auto max-w-2xl text-sm text-gray-400 sm:text-base">
+                    A monthly adaptive quiz that adjusts to your skill and rewards speed.
+                </p>
             </div>
 
             {/* Cards */}
-            <div className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
                 {/* Rules */}
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-3">
+                <div className="space-y-3 rounded-xl border border-gray-800 bg-gray-900 p-6">
                     <div className="flex items-center gap-2">
-                        <AdjustmentsHorizontalIcon className="w-5 h-5 text-blue-400" />
+                        <AdjustmentsHorizontalIcon className="h-5 w-5 text-blue-400" />
+
                         <h2 className="text-lg font-semibold">Quiz Rules</h2>
                     </div>
 
-                    <ul className="text-gray-300 space-y-1 list-disc list-inside">
+                    <ul className="list-inside list-disc space-y-1 text-gray-300">
                         <li>One quiz per calendar month</li>
                         <li>Each quiz contains 10 questions</li>
                         <li>No repeated questions</li>
@@ -27,9 +31,10 @@ export default function AboutPage() {
                 </div>
 
                 {/* Difficulty */}
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-3">
+                <div className="space-y-3 rounded-xl border border-gray-800 bg-gray-900 p-6">
                     <div className="flex items-center gap-2">
-                        <AdjustmentsHorizontalIcon className="w-5 h-5 text-purple-400" />
+                        <AdjustmentsHorizontalIcon className="h-5 w-5 text-purple-400" />
+
                         <h2 className="text-lg font-semibold">Adaptive Difficulty</h2>
                     </div>
 
@@ -39,13 +44,14 @@ export default function AboutPage() {
                 </div>
 
                 {/* Scoring */}
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-3">
+                <div className="space-y-3 rounded-xl border border-gray-800 bg-gray-900 p-6">
                     <div className="flex items-center gap-2">
-                        <ClockIcon className="w-5 h-5 text-yellow-400" />
+                        <ClockIcon className="h-5 w-5 text-yellow-400" />
+
                         <h2 className="text-lg font-semibold">Scoring</h2>
                     </div>
 
-                    <ul className="text-gray-300 space-y-1 list-disc list-inside">
+                    <ul className="list-inside list-disc space-y-1 text-gray-300">
                         <li>Correct answers earn points</li>
                         <li>Faster responses earn more points</li>
                         <li>Higher difficulty increases rewards</li>
@@ -53,9 +59,10 @@ export default function AboutPage() {
                 </div>
 
                 {/* Leaderboard */}
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-3">
+                <div className="space-y-3 rounded-xl border border-gray-800 bg-gray-900 p-6">
                     <div className="flex items-center gap-2">
-                        <TrophyIcon className="w-5 h-5 text-green-400" />
+                        <TrophyIcon className="h-5 w-5 text-green-400" />
+
                         <h2 className="text-lg font-semibold">Leaderboard</h2>
                     </div>
 
@@ -63,17 +70,18 @@ export default function AboutPage() {
                 </div>
 
                 {/* Stats */}
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-3">
+                <div className="space-y-3 rounded-xl border border-gray-800 bg-gray-900 p-6 md:col-span-2">
                     <div className="flex items-center gap-2">
-                        <ChartBarIcon className="w-5 h-5 text-pink-400" />
+                        <ChartBarIcon className="h-5 w-5 text-pink-400" />
+
                         <h2 className="text-lg font-semibold">Stats</h2>
                     </div>
 
-                    <ul className="text-gray-300 space-y-1 list-disc list-inside">
-                        <li>Total score</li>
-                        <li>Accuracy</li>
-                        <li>Best performance</li>
-                        <li>Progress over time</li>
+                    <ul className="grid gap-2 text-gray-300 sm:grid-cols-2">
+                        <li>• Total score</li>
+                        <li>• Accuracy</li>
+                        <li>• Best performance</li>
+                        <li>• Progress over time</li>
                     </ul>
                 </div>
             </div>

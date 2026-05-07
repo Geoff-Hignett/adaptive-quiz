@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdaptiveQuiz.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260505131439_InitialCreate")]
+    [Migration("20260507120103_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

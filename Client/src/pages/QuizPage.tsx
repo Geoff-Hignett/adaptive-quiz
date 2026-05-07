@@ -10,13 +10,17 @@ export default function QuizPage() {
     const [selected, setSelected] = useState("");
     const [startTime, setStartTime] = useState(0);
     const [dismissed, setDismissed] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(10);
+    const [hasTimedOut, setHasTimedOut] = useState(false);
+    const [currentScore, setCurrentScore] = useState(0);
+    const [currentLevel, setCurrentLevel] = useState(1);
 
     const startQuiz = useStartQuiz();
     const answerMutation = useAnswer();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { displayName } = useUser();
+    const { displayName, canPlay } = useUser();
     const { data: me } = useMe();
 
     const { data: question, isLoading, isError, refetch } = useNextQuestion(attemptId);
@@ -24,7 +28,32 @@ export default function QuizPage() {
 
     const handleStart = async () => {
         const res = await startQuiz.mutateAsync();
+        setCurrentScore(0);
+        setCurrentLevel(res.startingLevel);
         setAttemptId(res.id);
+    };
+
+    const handleTimeout = async () => {
+        if (!question || !attemptId) return;
+
+        const res = await answerMutation.mutateAsync({
+            attemptId,
+            questionId: question.id,
+            answer: "",
+            timeTakenMs: 10000,
+        });
+
+        if (res.isComplete) {
+            queryClient.invalidateQueries({ queryKey: ["stats"] });
+            queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+            queryClient.invalidateQueries({ queryKey: ["me"] });
+
+            navigate("/results", {
+                state: { attemptId },
+            });
+        } else {
+            refetch();
+        }
     };
 
     const handleAnswer = async () => {
@@ -41,6 +70,8 @@ export default function QuizPage() {
 
         setSelected("");
         setStartTime(0);
+        setCurrentScore((prev) => prev + res.totalPoints);
+        setCurrentLevel(res.newLevel);
 
         if (res.isComplete) {
             // invalidate everything affected by quiz completion
@@ -60,16 +91,29 @@ export default function QuizPage() {
         }
     }, [question]);
 
-    function hasPlayedThisMonth(lastQuizAt?: string | null) {
-        if (!lastQuizAt) return false;
+    useEffect(() => {
+        if (!question) return;
 
-        const last = new Date(lastQuizAt);
-        const now = new Date();
+        setTimeLeft(10);
+        setHasTimedOut(false);
+    }, [question]);
 
-        return last.getMonth() === now.getMonth() && last.getFullYear() === now.getFullYear();
-    }
+    // Countdown effect
+    useEffect(() => {
+        if (!question) return;
 
-    const canPlay = !hasPlayedThisMonth(me?.lastQuizAt);
+        if (timeLeft <= 0 && !hasTimedOut) {
+            setHasTimedOut(true);
+            handleTimeout();
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            setTimeLeft((prev) => prev - 1);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [timeLeft, question]);
 
     return (
         <div className="space-y-6">
@@ -140,6 +184,23 @@ export default function QuizPage() {
             {/* Question */}
             {question && (
                 <div className="space-y-6">
+                    <div className="flex items-center justify-between gap-3">
+                        <div className="rounded-full border border-gray-700 bg-gray-900 px-4 py-2 text-sm font-medium text-gray-300">
+                            Score {currentScore}
+                        </div>
+
+                        <div
+                            className={`flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold transition ${
+                                timeLeft <= 3 ? "bg-red-500 text-white animate-pulse" : "bg-gray-800 text-white"
+                            }`}>
+                            {timeLeft}
+                        </div>
+
+                        <div className="rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm font-medium text-blue-300">
+                            Level {currentLevel}
+                        </div>
+                    </div>
+
                     <h2 className="text-xl font-semibold text-center">{question.text}</h2>
 
                     <div className="space-y-2">

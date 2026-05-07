@@ -68,6 +68,9 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+
+    Console.WriteLine($"DB PATH: {db.Database.GetDbConnection().DataSource}");
+
     if (!db.Questions.Any())
     {
         var questions = new List<Question>();

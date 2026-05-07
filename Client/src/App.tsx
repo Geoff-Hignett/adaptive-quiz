@@ -22,7 +22,7 @@ export default function App() {
                     path="/about"
                     element={
                         <ProtectedRoute>
-                            <Layout>
+                            <Layout width="wide">
                                 <AboutPage />
                             </Layout>
                         </ProtectedRoute>
