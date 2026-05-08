@@ -65,9 +65,9 @@ export default function ResultsPage() {
             <div className="space-y-3">
                 <h2 className="text-lg font-semibold">Question Breakdown</h2>
 
-                <div className="grid gap-3 xl:grid-cols-2">
+                <ol className="grid gap-3 xl:grid-cols-2">
                     {data.breakdown.map((item, index) => (
-                        <div
+                        <li
                             key={item.questionId}
                             className={`rounded-xl border p-4 ${
                                 item.correct ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"
@@ -111,9 +111,9 @@ export default function ResultsPage() {
                                     {item.correct ? "Correct" : "Wrong"}
                                 </div>
                             </div>
-                        </div>
+                        </li>
                     ))}
-                </div>
+                </ol>
             </div>
 
             {/* Actions */}
