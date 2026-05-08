@@ -65,53 +65,55 @@ export default function ResultsPage() {
             <div className="space-y-3">
                 <h2 className="text-lg font-semibold">Question Breakdown</h2>
 
-                {data.breakdown.map((item, index) => (
-                    <div
-                        key={item.questionId}
-                        className={`rounded-xl border p-4 ${
-                            item.correct ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"
-                        }`}>
-                        <div className="flex items-start justify-between gap-3">
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    {item.correct ? (
-                                        <CheckCircleIcon className="h-5 w-5 text-green-400" />
-                                    ) : (
-                                        <XCircleIcon className="h-5 w-5 text-red-400" />
-                                    )}
+                <div className="grid gap-3 xl:grid-cols-2">
+                    {data.breakdown.map((item, index) => (
+                        <div
+                            key={item.questionId}
+                            className={`rounded-xl border p-4 ${
+                                item.correct ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"
+                            }`}>
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        {item.correct ? (
+                                            <CheckCircleIcon className="h-5 w-5 text-green-400" />
+                                        ) : (
+                                            <XCircleIcon className="h-5 w-5 text-red-400" />
+                                        )}
 
-                                    <span className="font-medium">Question {index + 1}</span>
-                                </div>
-
-                                <p className="text-sm text-gray-200">{item.text}</p>
-
-                                <div className="space-y-1 text-sm">
-                                    <div className="text-gray-300">
-                                        Your answer: <span className="font-medium">{item.answerGiven || "No answer"}</span>
+                                        <span className="font-medium">Question {index + 1}</span>
                                     </div>
 
-                                    {!item.correct && (
-                                        <div className="text-green-300">
-                                            Correct answer: <span className="font-medium">{item.correctAnswer}</span>
+                                    <p className="text-sm text-gray-200">{item.text}</p>
+
+                                    <div className="space-y-1 text-sm">
+                                        <div className="text-gray-300">
+                                            Your answer: <span className="font-medium">{item.answerGiven || "No answer"}</span>
                                         </div>
-                                    )}
+
+                                        {!item.correct && (
+                                            <div className="text-green-300">
+                                                Correct answer: <span className="font-medium">{item.correctAnswer}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2 text-xs">
+                                        <span className="rounded bg-gray-800 px-2 py-1 text-gray-300">Level {item.difficultyAtTime}</span>
+
+                                        <span className="rounded bg-gray-800 px-2 py-1 text-gray-300">{item.pointsAwarded} pts</span>
+
+                                        {!item.correct && <span className="rounded bg-red-500/20 px-2 py-1 text-red-300">Incorrect</span>}
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-wrap gap-2 text-xs">
-                                    <span className="rounded bg-gray-800 px-2 py-1 text-gray-300">Level {item.difficultyAtTime}</span>
-
-                                    <span className="rounded bg-gray-800 px-2 py-1 text-gray-300">{item.pointsAwarded} pts</span>
-
-                                    {!item.correct && <span className="rounded bg-red-500/20 px-2 py-1 text-red-300">Incorrect</span>}
+                                <div className={`text-sm font-semibold ${item.correct ? "text-green-300" : "text-red-300"}`}>
+                                    {item.correct ? "Correct" : "Wrong"}
                                 </div>
-                            </div>
-
-                            <div className={`text-sm font-semibold ${item.correct ? "text-green-300" : "text-red-300"}`}>
-                                {item.correct ? "Correct" : "Wrong"}
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
 
             {/* Actions */}

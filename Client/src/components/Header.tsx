@@ -2,7 +2,6 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
-
 import { ChevronDownIcon, TrophyIcon, HomeIcon, InformationCircleIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 
 export default function Header() {

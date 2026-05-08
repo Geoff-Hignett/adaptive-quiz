@@ -44,7 +44,7 @@ export default function App() {
                     path="/results"
                     element={
                         <ProtectedRoute>
-                            <Layout>
+                            <Layout width="wide">
                                 <ResultsPage />
                             </Layout>
                         </ProtectedRoute>
