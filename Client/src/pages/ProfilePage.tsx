@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useUpdateDisplayName, useMe } from "../hooks/useQuiz";
 import { useUser } from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { UserCircleIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 export default function ProfilePage() {
     const { data: me, isLoading } = useMe();
     const updateName = useUpdateDisplayName();
     const { setDisplayName } = useUser();
-    const navigate = useNavigate();
 
     const [newName, setNewName] = useState("");
     const [editing, setEditing] = useState(false);
@@ -82,13 +81,13 @@ export default function ProfilePage() {
                 )}
             </div>
 
-            {/* Quick Actions (optional but nice) */}
+            {/* Quick Actions */}
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-3 text-center">
                 <h2 className="text-lg font-semibold">Quick Actions</h2>
 
-                <button onClick={() => navigate("/stats")} className="w-full border border-gray-600 py-2 rounded-lg">
+                <Link to="/stats" className="block w-full border border-gray-600 py-2 rounded-lg">
                     View Stats
-                </button>
+                </Link>
             </div>
         </div>
     );
