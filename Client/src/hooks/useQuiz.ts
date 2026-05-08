@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "../api/client";
+import { useAuth } from "../context/AuthContext";
 import type { Question, AnswerResponse, ResultsResponse, MeResponse, LeaderboardEntry, StatsResponse } from "../types/quiz";
 
 export function useStartQuiz() {
@@ -36,13 +37,18 @@ export function useResults(attemptId: number | null) {
 }
 
 export function useMe() {
+    const { session } = useAuth();
+
     return useQuery({
         queryKey: ["me"],
         queryFn: () => {
             console.log("[useMe] fetching");
             return apiFetch<MeResponse>("/me");
         },
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        enabled: !!session,
+        retry: false,
+        staleTime: 1000 * 60 * 5, // 5 minutes - quiz eligibility resets at end each month, cannot indefinately cache
+        // possible TODO - derive eligibility client-side
     });
 }
 
