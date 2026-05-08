@@ -9,6 +9,8 @@ import ProfilePage from "./pages/ProfilePage";
 import StatsPage from "./pages/StatsPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Layout from "./components/Layout";
+import AdminRoute from "./routes/AdminRoute";
+import AdminQuestionsPage from "./pages/admin/AdminQuestionsPage";
 
 export default function App() {
     return (
@@ -81,6 +83,17 @@ export default function App() {
                                 <StatsPage />
                             </Layout>
                         </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/questions"
+                    element={
+                        <AdminRoute>
+                            <Layout width="wide">
+                                <AdminQuestionsPage />
+                            </Layout>
+                        </AdminRoute>
                     }
                 />
             </Routes>

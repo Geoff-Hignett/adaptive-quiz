@@ -13,7 +13,7 @@ export function useNextQuestion(attemptId: number | null) {
     return useQuery<Question>({
         queryKey: ["question", attemptId],
         queryFn: () => apiFetch<Question>(`/next?attemptId=${attemptId}`),
-        enabled: !!attemptId, // don't execute query if user hasn't started quiz
+        enabled: !!attemptId, // don't load a question until user has started quiz
     });
 }
 

@@ -22,15 +22,18 @@ The system delivers a monthly quiz cycle, where users complete a fixed-length qu
 ## 3. User Roles
 
 ### User
+
 - Can authenticate via magic link or social login
 - Can take one quiz per calendar month
 - Can view historical performance and analytics
 
 ### Tester
+
 - Can take unlimited quizzes without monthly restriction
 - Used for development and QA purposes
 
 ### Admin
+
 - Can create, edit, and manage questions
 - Can categorise questions
 - Can take quizzes without restriction but not enter the leaderboard
@@ -43,8 +46,8 @@ The system delivers a monthly quiz cycle, where users complete a fixed-length qu
 
 - Supabase-powered authentication
 - Supports:
-  - Magic link (primary method)
-  - OAuth providers (e.g. Google)
+    - Magic link (primary method)
+    - OAuth providers (e.g. Google)
 - No password requirement
 
 ---
@@ -52,19 +55,21 @@ The system delivers a monthly quiz cycle, where users complete a fixed-length qu
 ### 4.2 Quiz Lifecycle
 
 Each quiz attempt consists of:
+
 - Exactly 10 questions
 - A dynamically adjusted difficulty level
 - A single-use joker feature
 - Time-based scoring
 
 #### Flow:
+
 1. User starts quiz
 2. System validates eligibility (monthly restriction)
 3. Quiz begins at the user's current difficulty level
 4. Questions are served sequentially
 5. Difficulty adjusts after each answer:
-   - Correct → increase difficulty
-   - Incorrect → decrease difficulty
+    - Correct → increase difficulty
+    - Incorrect → decrease difficulty
 6. Quiz ends after 10 questions
 7. Results are stored and made available to the user
 
@@ -96,6 +101,7 @@ Each question contributes to a total score based on:
 - Active streak multiplier
 
 #### Streak System:
+
 - Consecutive correct answers increase the multiplier
 - Multiplier resets on incorrect answer
 

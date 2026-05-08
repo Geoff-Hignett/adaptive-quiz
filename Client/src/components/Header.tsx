@@ -77,6 +77,12 @@ export default function Header() {
                                     Stats
                                 </Link>
 
+                                {role === "Admin" && (
+                                    <Link to="/admin/questions" onClick={() => setOpen(false)} className="block px-4 py-2 hover:bg-gray-700">
+                                        Manage Questions
+                                    </Link>
+                                )}
+
                                 <button onClick={handleLogout} className="w-full px-4 py-2 text-left text-red-400 hover:bg-red-500/20">
                                     Logout
                                 </button>
@@ -110,6 +116,8 @@ export default function Header() {
                         {navItem("/profile", "Profile")}
 
                         {navItem("/stats", "Stats")}
+
+                        {role === "Admin" && navItem("/admin/questions", "Manage Questions")}
 
                         <button onClick={handleLogout} className="rounded px-2 py-2 text-left text-red-400 hover:bg-red-500/20">
                             Logout
