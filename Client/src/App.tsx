@@ -11,6 +11,8 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import Layout from "./components/Layout";
 import AdminRoute from "./routes/AdminRoute";
 import AdminQuestionsPage from "./pages/admin/AdminQuestionsPage";
+import CreateQuestionPage from "./pages/admin/CreateQuestionPage";
+import EditQuestionPage from "./pages/admin/EditQuestionPage";
 
 export default function App() {
     return (
@@ -92,6 +94,28 @@ export default function App() {
                         <AdminRoute>
                             <Layout width="wide">
                                 <AdminQuestionsPage />
+                            </Layout>
+                        </AdminRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/questions/new"
+                    element={
+                        <AdminRoute>
+                            <Layout width="wide">
+                                <CreateQuestionPage />
+                            </Layout>
+                        </AdminRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/questions/:id/edit"
+                    element={
+                        <AdminRoute>
+                            <Layout width="wide">
+                                <EditQuestionPage />
                             </Layout>
                         </AdminRoute>
                     }

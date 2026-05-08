@@ -35,7 +35,7 @@ export async function apiFetch<T>(path: string, options?: RequestInit): Promise<
             }
         } catch {}
 
-        // console.error(`[API ERROR ${requestId}] ${path}:`, message);
+        console.error(`[API ERROR ${requestId}] ${path}:`, message);
 
         throw new Error(message);
     }

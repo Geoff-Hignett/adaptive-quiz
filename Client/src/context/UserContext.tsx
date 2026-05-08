@@ -9,6 +9,7 @@ type UserContextType = {
     canManageQuestions: boolean;
     canEnterLeaderboard: boolean;
     setDisplayName: (name: string) => void;
+    isReady: boolean;
 };
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -33,6 +34,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
                 canPlay: data?.canPlay ?? false,
                 canManageQuestions: data?.canManageQuestions ?? false,
                 canEnterLeaderboard: data?.canEnterLeaderboard ?? true,
+                isReady: !!data,
                 setDisplayName,
             }}>
             {children}
