@@ -4,16 +4,15 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 
 export default function AuthPage() {
+    const navigate = useNavigate();
+    const { session, loading } = useAuth();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [isRecovery, setIsRecovery] = useState(false);
-
-    const { session, loading } = useAuth();
-
-    const navigate = useNavigate();
 
     // detect password recovery flow
     useEffect(() => {
