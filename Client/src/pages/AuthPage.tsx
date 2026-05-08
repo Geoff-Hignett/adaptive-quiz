@@ -203,13 +203,15 @@ export default function AuthPage() {
                     </form>
                 )}
 
-                {error && (
-                    <p role="alert" className="text-sm text-red-400">
-                        {error}
-                    </p>
-                )}
+                <div className="min-h-[20px]">
+                    {error && (
+                        <p role="alert" className="text-sm text-red-400">
+                            {error}
+                        </p>
+                    )}
 
-                {success && <p className="text-sm text-green-400">{success}</p>}
+                    {success && <p className="text-sm text-green-400">{success}</p>}
+                </div>
             </div>
         </div>
     );
