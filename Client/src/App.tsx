@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home";
+import AuthPage from "./pages/AuthPage";
 import AboutPage from "./pages/AboutPage";
 import QuizPage from "./pages/QuizPage";
 import ResultsPage from "./pages/ResultsPage";
@@ -15,7 +15,7 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 {/* Public */}
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<AuthPage />} />
 
                 {/* Protected */}
                 <Route
