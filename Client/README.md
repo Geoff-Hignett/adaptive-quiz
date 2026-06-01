@@ -43,7 +43,7 @@ Copy the example file and update values as needed:
 cp .env.example .env
 ```
 
-## Things to do
+## Things to do test
 
 - /results page handling for direct visits when there is no quiz `attemptId` to generate results
   planned improvement: - Move attemptId into URL (e.g. `/results/attemptId`) - OR fetch latest attempt from backend
