@@ -40,15 +40,14 @@ export function useMe() {
     const { session } = useAuth();
 
     return useQuery({
-        queryKey: ["me"],
+        queryKey: ["me", session?.user?.email],
         queryFn: () => {
             console.log("[useMe] fetching");
             return apiFetch<MeResponse>("/quiz/me");
         },
         enabled: !!session,
         retry: false,
-        staleTime: 1000 * 60 * 5, // 5 minutes - quiz eligibility resets at end each month, cannot indefinately cache
-        // possible TODO - derive eligibility client-side
+        staleTime: 1000 * 60 * 5,
     });
 }
 
