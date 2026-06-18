@@ -2,11 +2,13 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
+import { useQueryClient } from "@tanstack/react-query";
 import { ChevronDownIcon, TrophyIcon, HomeIcon, InformationCircleIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 
 export default function Header() {
     const location = useLocation();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const { displayName, role } = useUser();
 
@@ -15,6 +17,7 @@ export default function Header() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
+        queryClient.clear();
         navigate("/");
     };
 
