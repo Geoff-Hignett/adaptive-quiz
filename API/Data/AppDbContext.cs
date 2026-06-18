@@ -12,4 +12,5 @@ public class AppDbContext : DbContext
     public DbSet<QuizAttempt> QuizAttempts => Set<QuizAttempt>();
     public DbSet<QuizAttemptQuestion> QuizAttemptQuestions => Set<QuizAttemptQuestion>();
     public DbSet<UserQuestionHistory> UserQuestionHistories => Set<UserQuestionHistory>();
+    public DbSet<BugReport> BugReports => Set<BugReport>();
 }

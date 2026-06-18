@@ -11,7 +11,6 @@ export default function Header() {
     const queryClient = useQueryClient();
 
     const { displayName, role } = useUser();
-
     const [open, setOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -80,9 +79,19 @@ export default function Header() {
                                     Stats
                                 </Link>
 
-                                {role === "Admin" && (
-                                    <Link to="/admin/questions" onClick={() => setOpen(false)} className="block px-4 py-2 hover:bg-gray-700">
-                                        Manage Questions
+                                {role === "Admin" ? (
+                                    <>
+                                        <Link to="/admin/questions" onClick={() => setOpen(false)} className="block px-4 py-2 hover:bg-gray-700">
+                                            Manage Questions
+                                        </Link>
+
+                                        <Link to="/admin/bugs" onClick={() => setOpen(false)} className="block px-4 py-2 hover:bg-gray-700">
+                                            Manage Bugs
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <Link to="/bugs" onClick={() => setOpen(false)} className="block px-4 py-2 hover:bg-gray-700">
+                                        Report Bug
                                     </Link>
                                 )}
 
@@ -119,6 +128,8 @@ export default function Header() {
                         {navItem("/profile", "Profile")}
 
                         {navItem("/stats", "Stats")}
+
+                        {navItem("/bugs", "Report Bug")}
 
                         {role === "Admin" && navItem("/admin/questions", "Manage Questions")}
 

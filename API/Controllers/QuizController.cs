@@ -173,6 +173,32 @@ public class QuizController : ControllerBase
         }
     }
 
+    [Authorize]
+    [HttpPost("bugs")]
+    public async Task<IActionResult> CreateBugReport(
+    [FromBody] CreateBugReportRequest request)
+    {
+        var userId = await GetCurrentUserId();
+
+        var result = await _quizService.CreateBugReport(
+            userId,
+            request);
+
+        return Ok(result);
+    }
+
+    [Authorize]
+    [HttpGet("bugs")]
+    public async Task<IActionResult> GetMyBugReports()
+    {
+        var userId = await GetCurrentUserId();
+
+        var result = await _quizService.GetUserBugReports(
+            userId);
+
+        return Ok(result);
+    }
+
     private async Task<int> GetCurrentUserId()
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;

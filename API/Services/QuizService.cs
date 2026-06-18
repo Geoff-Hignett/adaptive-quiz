@@ -573,4 +573,49 @@ public class QuizService
         return question;
     }
 
+    public async Task<BugReport> CreateBugReport(
+        int userId,
+        CreateBugReportRequest request)
+    {
+        var user = await _context.Users.FindAsync(userId);
+
+        if (user == null)
+            throw new Exception("User not found");
+
+        if (user.Role == Roles.Admin)
+            throw new Exception("Admins cannot submit bug reports");
+
+        var report = new BugReport
+        {
+            UserId = userId,
+            Title = request.Title,
+            Description = request.Description,
+            Status = "Open",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.BugReports.Add(report);
+
+        await _context.SaveChangesAsync();
+
+        return report;
+    }
+
+    public async Task<List<BugReport>> GetAllBugReports()
+    {
+        return await _context.BugReports
+            .Include(x => x.User)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync();
+    }
+
+    public async Task<List<BugReport>> GetUserBugReports(
+        int userId)
+    {
+        return await _context.BugReports
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync();
+    }
+
 }

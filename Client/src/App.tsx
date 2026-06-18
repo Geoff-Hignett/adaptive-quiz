@@ -13,6 +13,7 @@ import AdminRoute from "./routes/AdminRoute";
 import AdminQuestionsPage from "./pages/admin/AdminQuestionsPage";
 import CreateQuestionPage from "./pages/admin/CreateQuestionPage";
 import EditQuestionPage from "./pages/admin/EditQuestionPage";
+import BugsPage from "./pages/BugsPage";
 
 export default function App() {
     return (
@@ -118,6 +119,17 @@ export default function App() {
                                 <EditQuestionPage />
                             </Layout>
                         </AdminRoute>
+                    }
+                />
+
+                <Route
+                    path="/bugs"
+                    element={
+                        <ProtectedRoute>
+                            <Layout width="wide">
+                                <BugsPage />
+                            </Layout>
+                        </ProtectedRoute>
                     }
                 />
             </Routes>

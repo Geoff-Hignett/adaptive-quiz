@@ -38,7 +38,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=adaptivequiz.db"));
+    options.UseSqlite("Data Source=Data/adaptivequiz.db"));
 builder.Services.AddScoped<QuizService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -70,8 +70,7 @@ using (var scope = app.Services.CreateScope())
 
     db.Database.Migrate();
 
-    Console.WriteLine($"DB PATH: {db.Database.GetDbConnection().DataSource}");
-
+    // Seed the database with questions if it's empty
     if (!db.Questions.Any())
     {
         var questions = new List<Question>();

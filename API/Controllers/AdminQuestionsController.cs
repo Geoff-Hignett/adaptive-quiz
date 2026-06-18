@@ -130,4 +130,26 @@ public class AdminQuestionsController : ControllerBase
 
         return Ok(question);
     }
+
+    [HttpGet("/api/admin/bugs")]
+    public async Task<IActionResult> GetBugReports()
+    {
+        var userEmail = User.FindFirst(
+            ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(userEmail))
+            return Unauthorized();
+
+        var user = await _quizService
+            .EnsureUserExists(userEmail);
+
+        if (user.Role != Roles.Admin &&
+            user.Role != Roles.Tester)
+            return Forbid();
+
+        var reports = await _quizService
+            .GetAllBugReports();
+
+        return Ok(reports);
+    }
 }

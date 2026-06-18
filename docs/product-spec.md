@@ -23,20 +23,26 @@ The system delivers a monthly quiz cycle, where users complete a fixed-length qu
 
 ### User
 
-- Can authenticate via magic link or social login
-- Can take one quiz per calendar month
-- Can view historical performance and analytics
+- Can authenticate via magic link
+- Can take one quiz per month
+- Can view stats
+- Can submit bug reports
+- Can view their own bug reports
 
 ### Tester
 
-- Can take unlimited quizzes without monthly restriction
-- Used for development and QA purposes
+- Can authenticate
+- Can take unlimited quizzes
+- Can view stats
+- Can submit bug reports
+- Can view their own bug reports
 
 ### Admin
 
-- Can create, edit, and manage questions
-- Can categorise questions
-- Can take quizzes without restriction but not enter the leaderboard
+- Can manage questions (CRUD)
+- Can manage bug reports
+- Can take quizzes without restriction
+- Cannot enter leaderboard
 
 ---
 
