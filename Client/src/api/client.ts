@@ -6,6 +6,8 @@ export async function apiFetch<T>(path: string, options?: RequestInit): Promise<
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token;
 
+    console.log("Token: " + token);
+
     // Debug
     const requestId = Math.random().toString(36).slice(2, 7);
 
