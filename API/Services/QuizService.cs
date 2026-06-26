@@ -618,4 +618,32 @@ public class QuizService
             .ToListAsync();
     }
 
+    public async Task<BugReport?> UpdateBugStatus(
+    int id,
+    UpdateBugStatusRequest request)
+    {
+        var bug = await _context.BugReports
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (bug == null)
+            return null;
+
+        var allowed = new[]
+        {
+        "Open",
+        "In Progress",
+        "Resolved",
+        "Closed"
+    };
+
+        if (!allowed.Contains(request.Status))
+            throw new Exception("Invalid status");
+
+        bug.Status = request.Status;
+
+        await _context.SaveChangesAsync();
+
+        return bug;
+    }
+
 }
