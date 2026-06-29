@@ -14,4 +14,5 @@ public class BugReport
 
     public DateTime CreatedAt { get; set; }
 
+    public List<BugComment> Comments { get; set; } = [];
 }

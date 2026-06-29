@@ -67,4 +67,59 @@ public class AdminBugsController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpGet("{id}/comments")]
+    public async Task<IActionResult> GetComments(int id)
+    {
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(userEmail))
+            return Unauthorized();
+
+        var user = await _quizService.EnsureUserExists(userEmail);
+
+        if (user.Role != Roles.Admin)
+            return Forbid();
+
+        var comments = await _quizService.GetBugComments(id);
+
+        return Ok(comments);
+    }
+
+    [HttpPost("{id}/comments")]
+    public async Task<IActionResult> AddComment(
+    int id,
+    [FromBody] CreateBugCommentRequest request)
+    {
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(userEmail))
+            return Unauthorized();
+
+        var user = await _quizService.EnsureUserExists(userEmail);
+
+        if (user.Role != Roles.Admin)
+            return Forbid();
+
+        try
+        {
+            var comment = await _quizService.AddBugComment(
+                id,
+                user.Id,
+                request);
+
+            return Ok(new
+            {
+                comment.Id,
+                comment.BugReportId,
+                comment.UserId,
+                comment.Comment,
+                comment.CreatedAt
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

@@ -2,6 +2,7 @@
 using AdaptiveQuiz.Api.Domain;
 using AdaptiveQuiz.Api.Infrastructure;
 using AdaptiveQuiz.Api.Requests;
+using AdaptiveQuiz.Api.Responses;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -618,7 +619,9 @@ public class QuizService
             .ToListAsync();
     }
 
-    public async Task<BugReport?> UpdateBug(int id, UpdateBugRequest request)
+    public async Task<BugReport?> UpdateBug(
+        int id, 
+        UpdateBugRequest request)
     {
         var bug = await _context.BugReports
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -651,6 +654,52 @@ public class QuizService
         await _context.SaveChangesAsync();
 
         return bug;
+    }
+
+    public async Task<BugComment> AddBugComment(
+        int bugId,
+        int userId,
+        CreateBugCommentRequest request)
+    {
+        var bug = await _context.BugReports
+            .FirstOrDefaultAsync(x => x.Id == bugId);
+
+        if (bug == null)
+            throw new Exception("Bug not found");
+
+        if (string.IsNullOrWhiteSpace(request.Comment))
+            throw new Exception("Comment is required");
+
+        var comment = new BugComment
+        {
+            BugReportId = bugId,
+            UserId = userId,
+            Comment = request.Comment.Trim(),
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.BugComments.Add(comment);
+
+        await _context.SaveChangesAsync();
+
+        return comment;
+    }
+
+    public async Task<List<BugCommentResponse>> GetBugComments(int bugId)
+    {
+        return await _context.BugComments
+            .Include(x => x.User)
+            .Where(x => x.BugReportId == bugId)
+            .OrderBy(x => x.CreatedAt)
+            .Select(x => new BugCommentResponse
+            {
+                Id = x.Id,
+                Comment = x.Comment,
+                CreatedAt = x.CreatedAt,
+                DisplayName = x.User!.DisplayName,
+                Role = x.User.Role
+            })
+            .ToListAsync();
     }
 
 }
