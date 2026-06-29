@@ -15,6 +15,7 @@ import CreateQuestionPage from "./pages/admin/CreateQuestionPage";
 import EditQuestionPage from "./pages/admin/EditQuestionPage";
 import BugsPage from "./pages/BugsPage";
 import AdminBugsPage from "./pages/admin/AdminBugsPage";
+import AdminBugDetailsPage from "./pages/admin/AdminBugDetailsPage";
 
 export default function App() {
     return (
@@ -140,6 +141,17 @@ export default function App() {
                         <AdminRoute>
                             <Layout>
                                 <AdminBugsPage />
+                            </Layout>
+                        </AdminRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/bugs/:id"
+                    element={
+                        <AdminRoute>
+                            <Layout width="wide">
+                                <AdminBugDetailsPage />
                             </Layout>
                         </AdminRoute>
                     }

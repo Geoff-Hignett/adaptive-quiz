@@ -702,4 +702,22 @@ public class QuizService
             .ToListAsync();
     }
 
+    public async Task<BugReportResponse?> GetBugReport(int id)
+    {
+        return await _context.BugReports
+            .Include(x => x.User)
+            .Where(x => x.Id == id)
+            .Select(x => new BugReportResponse
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                Status = x.Status,
+                Severity = x.Severity,
+                CreatedAt = x.CreatedAt,
+                DisplayName = x.User!.DisplayName
+            })
+            .FirstOrDefaultAsync();
+    }
+
 }

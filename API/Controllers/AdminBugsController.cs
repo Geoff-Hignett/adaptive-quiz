@@ -122,4 +122,25 @@ public class AdminBugsController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetBug(int id)
+    {
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(userEmail))
+            return Unauthorized();
+
+        var user = await _quizService.EnsureUserExists(userEmail);
+
+        if (user.Role != Roles.Admin)
+            return Forbid();
+
+        var bug = await _quizService.GetBugReport(id);
+
+        if (bug == null)
+            return NotFound();
+
+        return Ok(bug);
+    }
 }

@@ -9,6 +9,5 @@ public class BugCommentResponse
     public DateTime CreatedAt { get; set; }
 
     public string DisplayName { get; set; } = "";
-
     public string Role { get; set; } = "";
 }

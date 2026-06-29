@@ -30,3 +30,38 @@ export function useUpdateBugStatus() {
         },
     });
 }
+
+export function useBug(id: number) {
+    return useQuery({
+        queryKey: ["bug", id],
+        queryFn: () => apiFetch(`/admin/bugs/${id}`),
+        enabled: !!id,
+    });
+}
+
+export function useBugComments(id: number) {
+    return useQuery({
+        queryKey: ["bug-comments", id],
+        queryFn: () => apiFetch(`/admin/bugs/${id}/comments`),
+        enabled: !!id,
+    });
+}
+
+export function useAddBugComment(id: number) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (comment: string) =>
+            apiFetch(`/admin/bugs/${id}/comments`, {
+                method: "POST",
+                body: JSON.stringify({
+                    comment,
+                }),
+            }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["bug-comments", id],
+            });
+        },
+    });
+}

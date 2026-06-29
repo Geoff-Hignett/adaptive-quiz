@@ -1,9 +1,8 @@
-import { useAdminBugs, useUpdateBugStatus } from "../../hooks/useAdminBugs";
-import { getStatusClasses } from "../../utils/bugStatus";
+import { Link } from "react-router-dom";
+import { useAdminBugs } from "../../hooks/useAdminBugs";
 
 export default function AdminBugsPage() {
     const { data: bugs, isLoading } = useAdminBugs();
-    const updateStatus = useUpdateBugStatus();
 
     return (
         <div className="space-y-8">
@@ -21,20 +20,9 @@ export default function AdminBugsPage() {
                         <div className="mb-3 flex items-center justify-between">
                             <h2 className="text-xl font-semibold">{bug.title}</h2>
 
-                            <select
-                                value={bug.status}
-                                onChange={(e) =>
-                                    updateStatus.mutate({
-                                        id: bug.id,
-                                        status: e.target.value,
-                                    })
-                                }
-                                className={`rounded border px-2 py-1 ${getStatusClasses(bug.status)}`}>
-                                <option>Open</option>
-                                <option>In Progress</option>
-                                <option>Resolved</option>
-                                <option>Closed</option>
-                            </select>
+                            <Link to={`/admin/bugs/${bug.id}`} className="rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-500">
+                                Manage
+                            </Link>
                         </div>
 
                         <p className="mb-4 text-gray-300">{bug.description}</p>
