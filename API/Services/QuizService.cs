@@ -591,6 +591,7 @@ public class QuizService
             Title = request.Title,
             Description = request.Description,
             Status = "Open",
+            Severity = BugSeverities.Medium,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -609,8 +610,7 @@ public class QuizService
             .ToListAsync();
     }
 
-    public async Task<List<BugReport>> GetUserBugReports(
-        int userId)
+    public async Task<List<BugReport>> GetUserBugReports(int userId)
     {
         return await _context.BugReports
             .Where(x => x.UserId == userId)
@@ -618,9 +618,7 @@ public class QuizService
             .ToListAsync();
     }
 
-    public async Task<BugReport?> UpdateBugStatus(
-    int id,
-    UpdateBugStatusRequest request)
+    public async Task<BugReport?> UpdateBug(int id, UpdateBugRequest request)
     {
         var bug = await _context.BugReports
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -639,7 +637,16 @@ public class QuizService
         if (!allowed.Contains(request.Status))
             throw new Exception("Invalid status");
 
+        if (request.Severity != BugSeverities.Low &&
+            request.Severity != BugSeverities.Medium &&
+            request.Severity != BugSeverities.High &&
+            request.Severity != BugSeverities.Critical)
+        {
+            throw new Exception("Invalid severity");
+        }
+
         bug.Status = request.Status;
+        bug.Severity = request.Severity;
 
         await _context.SaveChangesAsync();
 

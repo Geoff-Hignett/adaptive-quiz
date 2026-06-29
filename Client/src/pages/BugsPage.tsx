@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCreateBug, useMyBugs } from "../hooks/useBugs";
+import { getStatusClasses } from "../utils/bugStatus";
 
 export default function BugsPage() {
     const { data: bugs, isLoading, refetch } = useMyBugs();
@@ -94,7 +95,9 @@ export default function BugsPage() {
                                 <div className="mb-2 flex items-start justify-between gap-4">
                                     <h3 className="font-semibold">{bug.title}</h3>
 
-                                    <span className="rounded bg-gray-700 px-2 py-1 text-xs whitespace-nowrap">{bug.status}</span>
+                                    <span className={`rounded px-2 py-1 text-xs whitespace-nowrap ${getStatusClasses(bug.status)}`}>
+                                        {bug.status}
+                                    </span>
                                 </div>
 
                                 <p className="mb-3 text-sm text-gray-300">{bug.description}</p>

@@ -1,7 +1,9 @@
-import { useAdminBugs } from "../../hooks/useAdminBugs";
+import { useAdminBugs, useUpdateBugStatus } from "../../hooks/useAdminBugs";
+import { getStatusClasses } from "../../utils/bugStatus";
 
 export default function AdminBugsPage() {
     const { data: bugs, isLoading } = useAdminBugs();
+    const updateStatus = useUpdateBugStatus();
 
     return (
         <div className="space-y-8">
@@ -19,7 +21,20 @@ export default function AdminBugsPage() {
                         <div className="mb-3 flex items-center justify-between">
                             <h2 className="text-xl font-semibold">{bug.title}</h2>
 
-                            <span className="rounded bg-gray-700 px-3 py-1 text-sm">{bug.status}</span>
+                            <select
+                                value={bug.status}
+                                onChange={(e) =>
+                                    updateStatus.mutate({
+                                        id: bug.id,
+                                        status: e.target.value,
+                                    })
+                                }
+                                className={`rounded border px-2 py-1 ${getStatusClasses(bug.status)}`}>
+                                <option>Open</option>
+                                <option>In Progress</option>
+                                <option>Resolved</option>
+                                <option>Closed</option>
+                            </select>
                         </div>
 
                         <p className="mb-4 text-gray-300">{bug.description}</p>

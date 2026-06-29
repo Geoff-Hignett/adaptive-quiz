@@ -41,7 +41,7 @@ public class AdminBugsController : ControllerBase
     [HttpPut("{id}/status")]
     public async Task<IActionResult> UpdateStatus(
     int id,
-    [FromBody] UpdateBugStatusRequest request)
+    [FromBody] UpdateBugRequest request)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -55,7 +55,7 @@ public class AdminBugsController : ControllerBase
 
         try
         {
-            var bug = await _quizService.UpdateBugStatus(id, request);
+            var bug = await _quizService.UpdateBug(id, request);
 
             if (bug == null)
                 return NotFound();
