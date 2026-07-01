@@ -1,6 +1,10 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { formatRelativeDate } from "../../utils/date";
 import { useAdminBug, useUpdateBug, useAdminBugComments, useAddBugComment } from "../../hooks/useAdminBugs";
+import BugConversation from "../../components/bug/BugConversation";
+import BugStatusBadge from "../../components/bug/BugStatusBadge";
+import BugSeverityBadge from "../../components/bug/BugSeverityBadge";
 
 export default function AdminBugDetailsPage() {
     const { id } = useParams();
@@ -14,6 +18,8 @@ export default function AdminBugDetailsPage() {
     const [status, setStatus] = useState("");
     const [severity, setSeverity] = useState("");
     const [comment, setComment] = useState("");
+
+    const dirty = status !== bug?.status || severity !== bug?.severity;
 
     useEffect(() => {
         if (bug) {
@@ -48,17 +54,17 @@ export default function AdminBugDetailsPage() {
 
                         <div>
                             <div className="text-sm text-gray-400">Created</div>
-                            <div>{new Date(bug.createdAt).toLocaleString()}</div>
+                            <div>{formatRelativeDate(bug.createdAt)}</div>
                         </div>
 
                         <div>
                             <div className="text-sm text-gray-400">Status</div>
-                            <div>{bug.status}</div>
+                            <BugStatusBadge status={bug.status} />
                         </div>
 
                         <div>
                             <div className="text-sm text-gray-400">Severity</div>
-                            <div>{bug.severity}</div>
+                            <BugSeverityBadge severity={bug.severity} />
                         </div>
 
                         <div>
@@ -108,6 +114,7 @@ export default function AdminBugDetailsPage() {
                         </div>
 
                         <button
+                            disabled={!dirty || updateBug.isPending}
                             onClick={() =>
                                 updateBug.mutate({
                                     id: bug.id,
@@ -115,7 +122,10 @@ export default function AdminBugDetailsPage() {
                                     severity,
                                 })
                             }
-                            className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
+                            className={`
+                                w-full rounded px-4 py-2 font-medium transition
+                                ${dirty ? "bg-blue-600 text-white hover:bg-blue-500" : "bg-gray-700 text-gray-400 cursor-not-allowed"}
+                            `}>
                             Save Changes
                         </button>
                     </div>
@@ -128,21 +138,7 @@ export default function AdminBugDetailsPage() {
                 <h2 className="mb-6 text-xl font-semibold">Conversation</h2>
 
                 <div className="space-y-4">
-                    {comments?.map((c) => (
-                        <div key={c.id} className="rounded border border-gray-700 p-4">
-                            <div className="mb-2 flex justify-between">
-                                <div>
-                                    <div className="font-semibold">{c.displayName}</div>
-
-                                    <div className="text-sm text-gray-400">{c.role}</div>
-                                </div>
-
-                                <div className="text-sm text-gray-400">{new Date(c.createdAt).toLocaleString()}</div>
-                            </div>
-
-                            <p>{c.comment}</p>
-                        </div>
-                    ))}
+                    <BugConversation comments={comments} />
                 </div>
             </div>
 

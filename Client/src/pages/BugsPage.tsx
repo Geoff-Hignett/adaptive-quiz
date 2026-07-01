@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { formatRelativeDate } from "../utils/date";
 import { useCreateBug, useMyBugs } from "../hooks/useBugs";
-import { getStatusClasses } from "../utils/bugStatus";
+import BugStatusBadge from "../components/bug/BugStatusBadge";
+import BugSeverityBadge from "../components/bug/BugSeverityBadge";
 
 export default function BugsPage() {
     const { data: bugs, isLoading, refetch } = useMyBugs();
@@ -92,21 +94,27 @@ export default function BugsPage() {
 
                     <div className="space-y-3">
                         {bugs?.map((bug) => (
-                            <div key={bug.id} className="rounded-lg border border-gray-700 bg-gray-800 p-4">
-                                <div className="mb-2 flex items-start justify-between gap-4">
-                                    <h3 className="font-semibold">{bug.title}</h3>
+                            <div key={bug.id} className="flex min-h-[220px] flex-col rounded-xl border border-gray-700 bg-gray-800 p-6">
+                                <h3 className="mb-4 text-xl font-semibold">{bug.title}</h3>
 
-                                    <span className={`rounded px-2 py-1 text-xs whitespace-nowrap ${getStatusClasses(bug.status)}`}>
-                                        {bug.status}
-                                    </span>
+                                <div className="mb-4 flex gap-2">
+                                    <BugSeverityBadge severity={bug.severity} />
+                                    <BugStatusBadge status={bug.status} />
                                 </div>
 
-                                <p className="mb-3 text-sm text-gray-300">{bug.description}</p>
+                                <p className="mb-6 flex-1 text-gray-300">{bug.description}</p>
 
-                                <p className="text-xs text-gray-500">{new Date(bug.createdAt).toLocaleString()}</p>
-                                <div className="mt-4 flex justify-end">
-                                    <Link to={`/bugs/${bug.id}`} className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
-                                        View Details
+                                <div className="flex items-end justify-between">
+                                    <div>
+                                        <div className="text-xs uppercase tracking-wide text-gray-500">Reported</div>
+
+                                        <div className="text-sm text-gray-400">{formatRelativeDate(bug.createdAt)}</div>
+                                    </div>
+
+                                    <Link
+                                        to={`/bugs/${bug.id}`}
+                                        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500">
+                                        View Details →
                                     </Link>
                                 </div>
                             </div>

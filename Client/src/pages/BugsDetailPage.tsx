@@ -1,8 +1,10 @@
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
+import { formatRelativeDate } from "../utils/date";
 import { useUserBug, useUserBugComments, useAddUserBugComment } from "../hooks/useBugs";
-import { getStatusClasses } from "../utils/bugStatus";
-import { getSeverityClasses } from "../utils/bugSeverity";
+import BugConversation from "../components/bug/BugConversation";
+import BugStatusBadge from "../components/bug/BugStatusBadge";
+import BugSeverityBadge from "../components/bug/BugSeverityBadge";
 
 export default function BugDetailsPage() {
     const { id } = useParams();
@@ -37,13 +39,13 @@ export default function BugDetailsPage() {
                     <div>
                         <div className="mb-1 text-sm text-gray-400">Status</div>
 
-                        <span className={`rounded border px-2 py-1 text-xs ${getStatusClasses(bug.status)}`}>{bug.status}</span>
+                        <BugStatusBadge status={bug.status} />
                     </div>
 
                     <div>
                         <div className="mb-1 text-sm text-gray-400">Severity</div>
 
-                        <span className={`rounded border px-2 py-1 text-xs ${getSeverityClasses(bug.severity)}`}>{bug.severity}</span>
+                        <BugSeverityBadge severity={bug.severity} />
                     </div>
 
                     <div className="md:col-span-2">
@@ -61,7 +63,7 @@ export default function BugDetailsPage() {
                     <div>
                         <div className="mb-1 text-sm text-gray-400">Reported</div>
 
-                        <div>{new Date(bug.createdAt).toLocaleString()}</div>
+                        <div>{formatRelativeDate(bug.createdAt)}</div>
                     </div>
                 </div>
             </div>
@@ -69,25 +71,7 @@ export default function BugDetailsPage() {
             <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
                 <h2 className="mb-6 text-xl font-semibold">Conversation</h2>
 
-                <div className="space-y-4">
-                    {comments?.length === 0 && <p className="text-gray-400">No comments yet.</p>}
-
-                    {comments?.map((comment) => (
-                        <div key={comment.id} className="rounded-lg border border-gray-700 p-4">
-                            <div className="mb-2 flex items-center justify-between">
-                                <div>
-                                    <div className="font-semibold">{comment.displayName}</div>
-
-                                    <div className="text-sm text-gray-400">{comment.role}</div>
-                                </div>
-
-                                <div className="text-sm text-gray-500">{new Date(comment.createdAt).toLocaleString()}</div>
-                            </div>
-
-                            <p>{comment.comment}</p>
-                        </div>
-                    ))}
-                </div>
+                <BugConversation comments={comments} />
             </div>
 
             <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">

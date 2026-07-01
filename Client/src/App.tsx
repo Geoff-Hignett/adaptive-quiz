@@ -151,7 +151,7 @@ export default function App() {
                     path="/admin/bugs"
                     element={
                         <AdminRoute>
-                            <Layout>
+                            <Layout width="wide">
                                 <AdminBugsPage />
                             </Layout>
                         </AdminRoute>
