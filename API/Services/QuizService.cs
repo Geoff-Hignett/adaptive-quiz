@@ -720,4 +720,37 @@ public class QuizService
             .FirstOrDefaultAsync();
     }
 
+    public async Task<bool> UserOwnsBug(
+    int bugId,
+    int userId)
+    {
+        return await _context.BugReports
+            .AnyAsync(x =>
+                x.Id == bugId &&
+                x.UserId == userId);
+    }
+
+    public async Task<BugReportResponse?> GetUserBug(
+    int bugId,
+    int userId)
+    {
+        var bug = await _context.BugReports
+            .Where(x =>
+                x.Id == bugId &&
+                x.UserId == userId)
+            .Select(x => new BugReportResponse
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                Status = x.Status,
+                Severity = x.Severity,
+                CreatedAt = x.CreatedAt,
+                DisplayName = x.User!.DisplayName
+            })
+            .FirstOrDefaultAsync();
+
+        return bug;
+    }
+
 }

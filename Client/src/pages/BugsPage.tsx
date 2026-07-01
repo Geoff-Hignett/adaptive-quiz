@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useCreateBug, useMyBugs } from "../hooks/useBugs";
 import { getStatusClasses } from "../utils/bugStatus";
 
@@ -103,6 +104,11 @@ export default function BugsPage() {
                                 <p className="mb-3 text-sm text-gray-300">{bug.description}</p>
 
                                 <p className="text-xs text-gray-500">{new Date(bug.createdAt).toLocaleString()}</p>
+                                <div className="mt-4 flex justify-end">
+                                    <Link to={`/bugs/${bug.id}`} className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
+                                        View Details
+                                    </Link>
+                                </div>
                             </div>
                         ))}
                     </div>

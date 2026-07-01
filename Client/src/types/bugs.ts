@@ -1,15 +1,17 @@
-export type BugReport = {
+export interface BugReportResponse {
     id: number;
-    userId: number;
-
     title: string;
     description: string;
     status: string;
+    severity: string;
     createdAt: string;
+    displayName: string;
+}
 
-    user: {
-        id: number;
-        email: string;
-        displayName: string;
-    };
-};
+export interface BugComment {
+    id: number;
+    comment: string;
+    createdAt: string;
+    displayName: string;
+    role: string;
+}

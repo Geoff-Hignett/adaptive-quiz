@@ -16,6 +16,7 @@ import EditQuestionPage from "./pages/admin/EditQuestionPage";
 import BugsPage from "./pages/BugsPage";
 import AdminBugsPage from "./pages/admin/AdminBugsPage";
 import AdminBugDetailsPage from "./pages/admin/AdminBugDetailsPage";
+import BugDetailsPage from "./pages/BugsDetailPage";
 
 export default function App() {
     return (
@@ -130,6 +131,17 @@ export default function App() {
                         <ProtectedRoute>
                             <Layout width="wide">
                                 <BugsPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/bugs/:id"
+                    element={
+                        <ProtectedRoute>
+                            <Layout width="wide">
+                                <BugDetailsPage />
                             </Layout>
                         </ProtectedRoute>
                     }

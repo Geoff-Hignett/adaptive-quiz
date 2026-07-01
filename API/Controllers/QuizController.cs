@@ -1,6 +1,7 @@
 ﻿using AdaptiveQuiz.Api.Domain;
-using AdaptiveQuiz.Api.Requests;
 using AdaptiveQuiz.Api.Infrastructure;
+using AdaptiveQuiz.Api.Requests;
+using AdaptiveQuiz.Api.Responses;
 using AdaptiveQuiz.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -197,6 +198,84 @@ public class QuizController : ControllerBase
             userId);
 
         return Ok(result);
+    }
+
+    [Authorize]
+    [HttpGet("bugs/{id}")]
+    public async Task<IActionResult> GetBug(int id)
+    {
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(userEmail))
+            return Unauthorized();
+
+        var user = await _quizService.EnsureUserExists(userEmail);
+
+        var bug = await _quizService.GetUserBug(id, user.Id);
+
+        if (bug == null)
+            return Forbid();
+
+        return Ok(bug);
+    }
+
+    [HttpGet("bugs/{id}/comments")]
+    public async Task<IActionResult> GetBugComments(int id)
+    {
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(userEmail))
+            return Unauthorized();
+
+        var user = await _quizService.EnsureUserExists(userEmail);
+
+        var ownsBug = await _quizService.UserOwnsBug(id, user.Id);
+
+        if (!ownsBug)
+            return Forbid();
+
+        var comments = await _quizService.GetBugComments(id);
+
+        return Ok(comments);
+    }
+
+    [HttpPost("bugs/{id}/comments")]
+    public async Task<IActionResult> AddBugComment(
+        int id,
+        [FromBody] CreateBugCommentRequest request)
+    {
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(userEmail))
+            return Unauthorized();
+
+        var user = await _quizService.EnsureUserExists(userEmail);
+
+        var ownsBug = await _quizService.UserOwnsBug(id, user.Id);
+
+        if (!ownsBug)
+            return Forbid();
+
+        try
+        {
+            var comment = await _quizService.AddBugComment(
+                id,
+                user.Id,
+                request);
+
+            return Ok(new BugCommentResponse
+            {
+                Id = comment.Id,
+                Comment = comment.Comment,
+                CreatedAt = comment.CreatedAt,
+                DisplayName = user.DisplayName,
+                Role = user.Role
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     private async Task<int> GetCurrentUserId()

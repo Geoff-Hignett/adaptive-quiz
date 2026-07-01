@@ -1,27 +1,34 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "../api/client";
-import type { BugReport } from "../types/bugs";
+import type { BugReportResponse, BugComment } from "../types/bugs";
 
 export function useAdminBugs() {
-    return useQuery<BugReport[]>({
+    return useQuery<BugReportResponse[]>({
         queryKey: ["admin-bugs"],
-        queryFn: () => apiFetch<BugReport[]>("/admin/bugs"),
+        queryFn: () => apiFetch<BugReportResponse[]>("/admin/bugs"),
     });
 }
 
-export function useUpdateBugStatus() {
+export function useUpdateBug() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, status }: { id: number; status: string }) =>
+        mutationFn: ({ id, status, severity }: { id: number; status: string; severity: string }) =>
             apiFetch(`/admin/bugs/${id}/status`, {
                 method: "PUT",
-                body: JSON.stringify({ status }),
+                body: JSON.stringify({
+                    status,
+                    severity,
+                }),
             }),
 
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
                 queryKey: ["admin-bugs"],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["bug", variables.id],
             });
 
             queryClient.invalidateQueries({
@@ -31,18 +38,18 @@ export function useUpdateBugStatus() {
     });
 }
 
-export function useBug(id: number) {
-    return useQuery({
+export function useAdminBug(id: number) {
+    return useQuery<BugReportResponse>({
         queryKey: ["bug", id],
-        queryFn: () => apiFetch(`/admin/bugs/${id}`),
+        queryFn: () => apiFetch<BugReportResponse>(`/admin/bugs/${id}`),
         enabled: !!id,
     });
 }
 
-export function useBugComments(id: number) {
-    return useQuery({
+export function useAdminBugComments(id: number) {
+    return useQuery<BugComment[]>({
         queryKey: ["bug-comments", id],
-        queryFn: () => apiFetch(`/admin/bugs/${id}/comments`),
+        queryFn: () => apiFetch<BugComment[]>(`/admin/bugs/${id}/comments`),
         enabled: !!id,
     });
 }
