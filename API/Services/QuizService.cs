@@ -603,11 +603,21 @@ public class QuizService
         return report;
     }
 
-    public async Task<List<BugReport>> GetAllBugReports()
+    public async Task<List<BugReportResponse>> GetAllBugReports()
     {
         return await _context.BugReports
             .Include(x => x.User)
             .OrderByDescending(x => x.CreatedAt)
+            .Select(x => new BugReportResponse
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                Status = x.Status,
+                Severity = x.Severity,
+                CreatedAt = x.CreatedAt,
+                DisplayName = x.User!.DisplayName
+            })
             .ToListAsync();
     }
 

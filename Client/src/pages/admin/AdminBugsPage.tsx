@@ -66,7 +66,6 @@ export default function AdminBugsPage() {
         <div className="space-y-8">
             <div>
                 <h1 className="text-3xl font-bold mb-5">Manage Bug Reports</h1>
-                <p className="text-gray-400">View and manage all submitted bugs.</p>
                 <div className="mb-8 grid gap-4 md:grid-cols-4">
                     <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
                         <div className="text-sm text-gray-400">Open</div>
@@ -91,12 +90,15 @@ export default function AdminBugsPage() {
                 <h2 className="mb-2 text-xl font-semibold">Filters</h2>
                 <div className="grid gap-4 rounded-xl border border-gray-800 bg-gray-900 p-4 md:grid-cols-4">
                     <div>
-                        <label className="mb-1 block text-sm text-gray-400">Status</label>
+                        <label htmlFor="status-filter" className="mb-1 block text-sm text-gray-400">
+                            Status
+                        </label>
 
                         <select
+                            id="status-filter"
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="w-full rounded border border-gray-700 bg-gray-950 p-2">
+                            className="w-full cursor-pointer rounded border border-gray-700 bg-gray-950 p-2">
                             <option>All</option>
                             <option>Open</option>
                             <option>In Progress</option>
@@ -106,12 +108,15 @@ export default function AdminBugsPage() {
                     </div>
 
                     <div>
-                        <label className="mb-1 block text-sm text-gray-400">Severity</label>
+                        <label htmlFor="severity-filter" className="mb-1 block text-sm text-gray-400">
+                            Severity
+                        </label>
 
                         <select
+                            id="severity-filter"
                             value={severityFilter}
                             onChange={(e) => setSeverityFilter(e.target.value)}
-                            className="w-full rounded border border-gray-700 bg-gray-950 p-2">
+                            className="w-full cursor-pointer rounded border border-gray-700 bg-gray-950 p-2">
                             <option>All</option>
                             <option>Low</option>
                             <option>Medium</option>
@@ -121,22 +126,28 @@ export default function AdminBugsPage() {
                     </div>
 
                     <div>
-                        <label className="mb-1 block text-sm text-gray-400">Search</label>
+                        <label htmlFor="search-filter" className="mb-1 block text-sm text-gray-400">
+                            Search
+                        </label>
 
                         <input
+                            id="search-filter"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search bugs..."
-                            className="w-full rounded border border-gray-700 bg-gray-950 p-2"
+                            className="w-full cursor-pointer rounded border border-gray-700 bg-gray-950 p-2"
                         />
                     </div>
                     <div>
-                        <label className="mb-1 block text-sm text-gray-400">Sort</label>
+                        <label htmlFor="sort-filter" className="mb-1 block text-sm text-gray-400">
+                            Sort
+                        </label>
 
                         <select
+                            id="sort-filter"
                             value={sort}
                             onChange={(e) => setSort(e.target.value)}
-                            className="w-full rounded border border-gray-700 bg-gray-950 p-2">
+                            className="w-full cursor-pointer rounded border border-gray-700 bg-gray-950 p-2">
                             <option>Newest</option>
                             <option>Oldest</option>
                             <option>Severity</option>
@@ -150,9 +161,10 @@ export default function AdminBugsPage() {
             <p className="text-sm text-gray-400">
                 Showing {sortedBugs.length} of {bugs?.length ?? 0} bugs
             </p>
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid items-stretch gap-6 lg:grid-cols-2">
                 {sortedBugs.map((bug) => (
-                    <div key={bug.id} className="flex min-h-[250px] flex-col rounded-xl border border-gray-800 bg-gray-900 p-6">
+                    <div key={bug.id} className="flex min-h-[270px] flex-col rounded-xl border border-gray-800 bg-gray-900 p-6">
+                        {/* Header */}
                         <h2 className="mb-4 text-xl font-semibold">{bug.title}</h2>
 
                         <div className="mb-4 flex gap-2">
@@ -160,23 +172,17 @@ export default function AdminBugsPage() {
                             <BugSeverityBadge severity={bug.severity} />
                         </div>
 
-                        <p className="mb-6 flex-1 text-gray-300">{bug.description}</p>
+                        {/* Description */}
+                        <p className="h-[4.5rem] overflow-hidden text-gray-300 leading-6 line-clamp-3">{bug.description}</p>
 
-                        <div className="space-y-2 text-sm">
-                            <div>
-                                <span className="font-medium text-gray-400">Reporter</span>
-
-                                <div>{bug.displayName}</div>
+                        {/* Footer */}
+                        <div className="mt-8 flex items-end justify-between">
+                            <div className="text-sm text-gray-400">
+                                Reported by <span className="text-white">{bug.displayName}</span>
+                                {" • "}
+                                {formatRelativeDate(bug.createdAt)}
                             </div>
 
-                            <div>
-                                <span className="font-medium text-gray-400">Reported</span>
-
-                                <div>{formatRelativeDate(bug.createdAt)}</div>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 flex justify-end">
                             <Link
                                 to={`/admin/bugs/${bug.id}`}
                                 className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500">

@@ -96,7 +96,7 @@ export default function App() {
                     path="/admin/questions"
                     element={
                         <AdminRoute>
-                            <Layout width="wide">
+                            <Layout width="admin">
                                 <AdminQuestionsPage />
                             </Layout>
                         </AdminRoute>
@@ -151,7 +151,7 @@ export default function App() {
                     path="/admin/bugs"
                     element={
                         <AdminRoute>
-                            <Layout width="wide">
+                            <Layout width="admin">
                                 <AdminBugsPage />
                             </Layout>
                         </AdminRoute>

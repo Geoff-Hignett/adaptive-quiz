@@ -45,7 +45,7 @@ export default function BugsPage() {
             </div>
 
             {/* Main Content */}
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid items-start gap-6 lg:grid-cols-2">
                 {/* Report Form */}
                 <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
                     <h2 className="mb-4 text-xl font-semibold">Report a Bug</h2>
@@ -70,7 +70,7 @@ export default function BugsPage() {
                                 rows={8}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2"
+                                className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 min-h-[200px]"
                                 placeholder="Describe what happened..."
                             />
                         </div>

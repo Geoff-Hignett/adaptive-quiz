@@ -40,48 +40,40 @@ export default function AdminBugDetailsPage() {
 
             <h1 className="text-3xl font-bold">Bug #{bug.id}</h1>
 
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-3">
                 {/* DETAILS */}
 
-                <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                    <h2 className="mb-4 text-xl font-semibold">Bug Details</h2>
+                <div className="rounded-xl border border-gray-800 bg-gray-900 p-6 lg:col-span-2">
+                    <h2 className="mb-6 text-xl font-semibold">Bug Details</h2>
 
-                    <div className="space-y-4">
-                        <div>
-                            <div className="text-sm text-gray-400">Reporter</div>
-                            <div>{bug.displayName}</div>
-                        </div>
+                    <h3 className="mb-3 text-2xl font-semibold">{bug.title}</h3>
 
-                        <div>
-                            <div className="text-sm text-gray-400">Created</div>
-                            <div>{formatRelativeDate(bug.createdAt)}</div>
-                        </div>
+                    <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-gray-400">
+                        <BugSeverityBadge severity={bug.severity} />
 
-                        <div>
-                            <div className="text-sm text-gray-400">Status</div>
-                            <BugStatusBadge status={bug.status} />
-                        </div>
+                        <BugStatusBadge status={bug.status} />
 
-                        <div>
-                            <div className="text-sm text-gray-400">Severity</div>
-                            <BugSeverityBadge severity={bug.severity} />
-                        </div>
+                        <span>•</span>
 
-                        <div>
-                            <div className="text-sm text-gray-400">Title</div>
-                            <div>{bug.title}</div>
-                        </div>
+                        <span>{formatRelativeDate(bug.createdAt)}</span>
 
-                        <div>
-                            <div className="text-sm text-gray-400">Description</div>
-                            <div>{bug.description}</div>
-                        </div>
+                        <span>•</span>
+
+                        <span>
+                            Reported by <span className="text-white">{bug.displayName}</span>
+                        </span>
+                    </div>
+
+                    <div>
+                        <h4 className="mb-2 font-medium">Description</h4>
+
+                        <p className="whitespace-pre-wrap leading-7 text-gray-200">{bug.description}</p>
                     </div>
                 </div>
 
                 {/* MANAGE */}
 
-                <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
+                <div className="rounded-xl border border-gray-800 bg-gray-900 p-6 lg:col-span-1">
                     <h2 className="mb-4 text-xl font-semibold">Manage</h2>
 
                     <div className="space-y-5">
