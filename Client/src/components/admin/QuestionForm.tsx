@@ -17,6 +17,7 @@ export default function QuestionForm({ initialValues, submitLabel, isSubmitting,
 
     const handleOptionChange = (index: number, value: string) => {
         const updated = [...options];
+
         updated[index] = value;
         setOptions(updated);
     };
@@ -28,7 +29,7 @@ export default function QuestionForm({ initialValues, submitLabel, isSubmitting,
             text,
             difficulty,
             category,
-            type: "MultipleChoice",
+            type: "MCQ", // MVP only includes multiple choice questions
             options,
             correctAnswer,
         });
