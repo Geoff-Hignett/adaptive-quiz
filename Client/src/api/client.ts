@@ -7,7 +7,7 @@ export async function apiFetch<T>(path: string, options?: RequestInit): Promise<
     const token = data.session?.access_token;
 
     // Debug
-    // console.log("Token: " + token);
+    console.log("Token: " + token);
     // const requestId = Math.random().toString(36).slice(2, 7);
 
     // console.log(`[API START ${requestId}] ${options?.method || "GET"} ${path}`);
