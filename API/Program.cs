@@ -40,6 +40,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=Data/adaptivequiz.db"));
 builder.Services.AddScoped<QuizService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

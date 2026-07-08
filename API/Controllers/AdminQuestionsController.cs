@@ -15,10 +15,12 @@ namespace AdaptiveQuiz.Api.Controllers;
 public class AdminQuestionsController : ControllerBase
 {
     private readonly QuizService _quizService;
+    private readonly UserService _userService;
 
-    public AdminQuestionsController(QuizService quizService)
+    public AdminQuestionsController(QuizService quizService, UserService userService)
     {
         _quizService = quizService;
+        _userService = userService;
     }
 
     [HttpGet]
@@ -29,7 +31,7 @@ public class AdminQuestionsController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             return Unauthorized();
 
-        var user = await _quizService.EnsureUserExists(userEmail);
+        var user = await _userService.GetOrCreateUserAsync(userEmail);
 
         if (user.Role != Roles.Admin)
             return Forbid();
@@ -64,7 +66,7 @@ public class AdminQuestionsController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             return Unauthorized();
 
-        var user = await _quizService.EnsureUserExists(userEmail);
+        var user = await _userService.GetOrCreateUserAsync(userEmail);
 
         if (user.Role != Roles.Admin)
             return Forbid();
@@ -82,7 +84,7 @@ public class AdminQuestionsController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             return Unauthorized();
 
-        var user = await _quizService.EnsureUserExists(userEmail);
+        var user = await _userService.GetOrCreateUserAsync(userEmail);
 
         if (user.Role != Roles.Admin)
             return Forbid();
@@ -116,7 +118,7 @@ public class AdminQuestionsController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             return Unauthorized();
 
-        var user = await _quizService.EnsureUserExists(userEmail);
+        var user = await _userService.GetOrCreateUserAsync(userEmail);
 
         if (user.Role != Roles.Admin)
             return Forbid();

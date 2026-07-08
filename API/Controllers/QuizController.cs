@@ -1,4 +1,5 @@
 ﻿using AdaptiveQuiz.Api.Domain;
+using AdaptiveQuiz.Api.Exceptions;
 using AdaptiveQuiz.Api.Infrastructure;
 using AdaptiveQuiz.Api.Requests;
 using AdaptiveQuiz.Api.Responses;
@@ -15,9 +16,12 @@ namespace AdaptiveQuiz.Api.Controllers;
 public class QuizController : ControllerBase
 {
     private readonly QuizService _quizService;
-    public QuizController(QuizService quizService)
+    private readonly UserService _userService;
+
+    public QuizController(QuizService quizService, UserService userService)
     {
         _quizService = quizService;
+        _userService = userService;
     }
 
     [Authorize]
@@ -39,7 +43,7 @@ public class QuizController : ControllerBase
                 attempt.StartingLevel
             });
         }
-        catch (Exception ex)
+        catch (QuizAlreadyTakenException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -111,7 +115,7 @@ public class QuizController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             return Unauthorized("User email not found in token");
 
-        var user = await _quizService.EnsureUserExists(userEmail);
+        var user = await _userService.GetOrCreateUserAsync(userEmail);
 
         Console.WriteLine($"ROLE FROM DB: {user.Role}");
         Console.WriteLine($"EMAIL: {user.Email}");
@@ -209,7 +213,7 @@ public class QuizController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             return Unauthorized();
 
-        var user = await _quizService.EnsureUserExists(userEmail);
+        var user = await _userService.GetOrCreateUserAsync(userEmail);
 
         var bug = await _quizService.GetUserBug(id, user.Id);
 
@@ -227,7 +231,7 @@ public class QuizController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             return Unauthorized();
 
-        var user = await _quizService.EnsureUserExists(userEmail);
+        var user = await _userService.GetOrCreateUserAsync(userEmail);
 
         var ownsBug = await _quizService.UserOwnsBug(id, user.Id);
 
@@ -249,7 +253,7 @@ public class QuizController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             return Unauthorized();
 
-        var user = await _quizService.EnsureUserExists(userEmail);
+        var user = await _userService.GetOrCreateUserAsync(userEmail);
 
         var ownsBug = await _quizService.UserOwnsBug(id, user.Id);
 
