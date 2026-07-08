@@ -14,13 +14,14 @@ namespace AdaptiveQuiz.Api.Controllers;
 [Authorize]
 public class AdminQuestionsController : ControllerBase
 {
-    private readonly QuizService _quizService;
     private readonly UserService _userService;
+    private readonly QuestionService _questionService;
 
-    public AdminQuestionsController(QuizService quizService, UserService userService)
+
+    public AdminQuestionsController(UserService userService, QuestionService questionService)
     {
-        _quizService = quizService;
         _userService = userService;
+        _questionService = questionService;
     }
 
     [HttpGet]
@@ -36,7 +37,7 @@ public class AdminQuestionsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var questions = await _quizService.GetAllQuestions();
+        var questions = await _questionService.GetAllQuestions();
 
         var result = questions.Select(q =>
         {
@@ -71,7 +72,7 @@ public class AdminQuestionsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var question = await _quizService.CreateQuestion(request);
+        var question = await _questionService.CreateQuestion(request);
 
         return Ok(question);
     }
@@ -89,7 +90,7 @@ public class AdminQuestionsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var question = await _quizService.GetQuestionById(id);
+        var question = await _questionService.GetQuestionById(id);
 
         if (question == null)
             return NotFound();
@@ -123,7 +124,7 @@ public class AdminQuestionsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var question = await _quizService.UpdateQuestion(
+        var question = await _questionService.UpdateQuestion(
             id,
             request);
 

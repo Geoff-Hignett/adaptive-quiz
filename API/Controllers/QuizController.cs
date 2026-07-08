@@ -17,61 +17,53 @@ public class QuizController : ControllerBase
 {
     private readonly QuizService _quizService;
     private readonly UserService _userService;
+    private readonly BugService _bugService;
 
-    public QuizController(QuizService quizService, UserService userService)
+    public QuizController(QuizService quizService, UserService userService, BugService bugService)
     {
         _quizService = quizService;
         _userService = userService;
+        _bugService = bugService;
     }
 
     [Authorize]
     [HttpPost("start")]
     public async Task<IActionResult> StartQuiz()
     {
-        try
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(userEmail))
+            return Unauthorized("User email not found in token");
+
+        var attempt = await _quizService.StartQuizForUser(userEmail);
+
+        return Ok(new
         {
-            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
-
-            if (string.IsNullOrEmpty(userEmail))
-                return Unauthorized("User email not found in token");
-
-            var attempt = await _quizService.StartQuizForUser(userEmail);
-
-            return Ok(new
-            {
-                attempt.Id,
-                attempt.StartingLevel
-            });
-        }
-        catch (QuizAlreadyTakenException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+            attempt.Id,
+            attempt.StartingLevel
+        });
     }
 
     [Authorize]
     [HttpGet("next")]
     public async Task<IActionResult> GetNext(int attemptId)
     {
-        try
-        {
-            var userId = await GetCurrentUserId();
-            var question = await _quizService.GetNextQuestion(attemptId, userId);
-            var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
+        var userId = await GetCurrentUserId();
 
-            return Ok(new
-            {
-                question.Id,
-                question.Text,
-                question.Type,
-                question.Difficulty,
-                options = data?.Options
-            });
-        }
-        catch (Exception ex)
+        var question = await _quizService.GetNextQuestion(
+            attemptId,
+            userId);
+
+        var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
+
+        return Ok(new
         {
-            return BadRequest(ex.Message);
-        }
+            question.Id,
+            question.Text,
+            question.Type,
+            question.Difficulty,
+            options = data?.Options
+        });
     }
 
     [Authorize]
@@ -143,7 +135,7 @@ public class QuizController : ControllerBase
     public async Task<IActionResult> UpdateDisplayName([FromBody] UpdateDisplayNameRequest request)
     {
         var userId = await GetCurrentUserId();
-        var result = await _quizService.UpdateDisplayName(userId, request.DisplayName);
+        var result = await _userService.UpdateDisplayName(userId, request.DisplayName);
 
         return Ok(result);
     }
@@ -154,6 +146,7 @@ public class QuizController : ControllerBase
         try
         {
             var result = await _quizService.GetLeaderboard();
+
             return Ok(result);
         }
         catch (Exception ex)
@@ -185,7 +178,7 @@ public class QuizController : ControllerBase
     {
         var userId = await GetCurrentUserId();
 
-        var result = await _quizService.CreateBugReport(
+        var result = await _bugService.CreateBugReport(
             userId,
             request);
 
@@ -198,7 +191,7 @@ public class QuizController : ControllerBase
     {
         var userId = await GetCurrentUserId();
 
-        var result = await _quizService.GetUserBugReports(
+        var result = await _bugService.GetUserBugReports(
             userId);
 
         return Ok(result);
@@ -214,8 +207,7 @@ public class QuizController : ControllerBase
             return Unauthorized();
 
         var user = await _userService.GetOrCreateUserAsync(userEmail);
-
-        var bug = await _quizService.GetUserBug(id, user.Id);
+        var bug = await _bugService.GetUserBug(id, user.Id);
 
         if (bug == null)
             return Forbid();
@@ -232,13 +224,12 @@ public class QuizController : ControllerBase
             return Unauthorized();
 
         var user = await _userService.GetOrCreateUserAsync(userEmail);
-
-        var ownsBug = await _quizService.UserOwnsBug(id, user.Id);
+        var ownsBug = await _bugService.UserOwnsBug(id, user.Id);
 
         if (!ownsBug)
             return Forbid();
 
-        var comments = await _quizService.GetBugComments(id);
+        var comments = await _bugService.GetBugComments(id);
 
         return Ok(comments);
     }
@@ -254,15 +245,14 @@ public class QuizController : ControllerBase
             return Unauthorized();
 
         var user = await _userService.GetOrCreateUserAsync(userEmail);
-
-        var ownsBug = await _quizService.UserOwnsBug(id, user.Id);
+        var ownsBug = await _bugService.UserOwnsBug(id, user.Id);
 
         if (!ownsBug)
             return Forbid();
 
         try
         {
-            var comment = await _quizService.AddBugComment(
+            var comment = await _bugService.AddBugComment(
                 id,
                 user.Id,
                 request);
@@ -289,6 +279,6 @@ public class QuizController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             throw new Exception("User email not found in token");
 
-        return await _quizService.GetUserIdFromEmail(userEmail);
+        return await _userService.GetUserIdFromEmail(userEmail);
     }
 }

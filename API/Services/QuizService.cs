@@ -60,7 +60,6 @@ public class QuizService
         };
 
         _context.QuizAttempts.Add(attempt);
-
         user.LastQuizAt = now;
 
         await _context.SaveChangesAsync();
@@ -102,7 +101,6 @@ public class QuizService
 
         var userId = attempt.UserId;
         var level = attempt.CurrentLevel;
-
         var user = await _context.Users.FindAsync(userId);
 
         if (user == null)

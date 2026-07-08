@@ -13,13 +13,14 @@ namespace AdaptiveQuiz.Api.Controllers;
 [Authorize]
 public class AdminBugsController : ControllerBase
 {
-    private readonly QuizService _quizService;
     private readonly UserService _userService;
+    private readonly BugService _bugService;
 
-    public AdminBugsController(QuizService quizService, UserService userService)
+
+    public AdminBugsController(UserService userService, BugService bugService)
     {
-        _quizService = quizService;
         _userService = userService;
+        _bugService = bugService;
     }
 
     [HttpGet]
@@ -35,7 +36,7 @@ public class AdminBugsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var reports = await _quizService.GetAllBugReports();
+        var reports = await _bugService.GetAllBugReports();
 
         return Ok(reports);
     }
@@ -57,7 +58,7 @@ public class AdminBugsController : ControllerBase
 
         try
         {
-            var bug = await _quizService.UpdateBug(id, request);
+            var bug = await _bugService.UpdateBug(id, request);
 
             if (bug == null)
                 return NotFound();
@@ -83,7 +84,7 @@ public class AdminBugsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var comments = await _quizService.GetBugComments(id);
+        var comments = await _bugService.GetBugComments(id);
 
         return Ok(comments);
     }
@@ -105,7 +106,7 @@ public class AdminBugsController : ControllerBase
 
         try
         {
-            var comment = await _quizService.AddBugComment(
+            var comment = await _bugService.AddBugComment(
                 id,
                 user.Id,
                 request);
@@ -138,7 +139,7 @@ public class AdminBugsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var bug = await _quizService.GetBugReport(id);
+        var bug = await _bugService.GetBugReport(id);
 
         if (bug == null)
             return NotFound();
