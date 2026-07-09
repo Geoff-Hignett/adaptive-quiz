@@ -74,18 +74,18 @@ public class QuizService
             .FirstOrDefaultAsync(a => a.Id == attemptId);
 
         if (attempt == null)
-            throw new Exception("Quiz not found");
+            throw new QuizNotFoundException();
 
         if (attempt.UserId != currentUserId)
-            throw new Exception("Unauthorized access");
+            throw new UnauthorizedQuizAccessException();
 
         // Already completed
         if (attempt.CompletedAt != null)
-            throw new Exception("Quiz already completed");
+            throw new QuizAlreadyTakenException();
 
         // Reached max questions
         if (attempt.Questions.Count >= 10)
-            throw new Exception("Quiz is finished");
+            throw new QuizFinishedException();
 
         // If a question is already active, return it
         if (attempt.CurrentQuestionId != null)
@@ -94,7 +94,7 @@ public class QuizService
                 .FirstOrDefaultAsync(q => q.Id == attempt.CurrentQuestionId);
 
             if (existingQuestion == null)
-                throw new Exception("Active question not found");
+                throw new QuestionNotFoundException();
 
             return existingQuestion;
         }
@@ -104,7 +104,7 @@ public class QuizService
         var user = await _context.Users.FindAsync(userId);
 
         if (user == null)
-            throw new Exception("User not found");
+            throw new UserNotFoundException();
 
         // Questions seen across all quizzes
         var seenQuestionIds = await _context.UserQuestionHistories
@@ -131,6 +131,9 @@ public class QuizService
             .OrderBy(q => Math.Abs(q.Difficulty - level))
             .ToListAsync();
 
+        if (!questions.Any())
+            throw new Exception("No questions available");
+
         var index = Random.Shared.Next(questions.Count);
         var question = questions[index];
 
@@ -155,10 +158,10 @@ public class QuizService
             .FirstOrDefaultAsync(a => a.Id == request.AttemptId);
 
         if (attempt == null)
-            throw new Exception("Quiz not found");
+            throw new QuizNotFoundException();
 
         if (attempt.UserId != currentUserId)
-            throw new Exception("Unauthorized access");
+            throw new UnauthorizedQuizAccessException();
 
         if (attempt.CurrentQuestionId != request.QuestionId)
             throw new Exception("Invalid question flow");
@@ -169,19 +172,19 @@ public class QuizService
             .FirstOrDefaultAsync(q => q.Id == request.QuestionId);
 
         if (question == null)
-            throw new Exception("Question not found");
+            throw new QuestionNotFoundException();
 
         // Determine correctness using question data (MCQ-based)
         var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
 
         if (data == null)
-            throw new Exception("Invalid question data");
+            throw new InvalidOperationException("Question data is invalid.");
 
         // validate answer exists in options (allow blanks for timer rundown)
         if (!string.IsNullOrWhiteSpace(request.Answer) &&
             !data.Options.Contains(request.Answer))
         {
-            throw new Exception("Invalid answer option");
+            throw new InvalidAnswerException();
         }
 
         bool correct = data.CorrectAnswer
@@ -282,13 +285,13 @@ public class QuizService
             .FirstOrDefaultAsync(a => a.Id == attemptId);
 
         if (attempt == null)
-            throw new Exception("Quiz not found");
+            throw new QuizNotFoundException();
 
         if (attempt.UserId != currentUserId)
-            throw new Exception("Unauthorized access");
+            throw new UnauthorizedQuizAccessException();
 
         if (attempt.CompletedAt == null)
-            throw new Exception("Quiz not completed yet");
+            throw new QuizNotCompletedException();
 
         var totalQuestions = attempt.Questions.Count;
         var correctAnswers = attempt.Questions.Count(q => q.Correct == true);

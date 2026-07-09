@@ -1,5 +1,6 @@
 ﻿using AdaptiveQuiz.Api.Data;
 using AdaptiveQuiz.Api.Domain;
+using AdaptiveQuiz.Api.Exceptions;
 using AdaptiveQuiz.Api.Infrastructure;
 using AdaptiveQuiz.Api.Requests;
 using AdaptiveQuiz.Api.Responses;
@@ -21,10 +22,7 @@ namespace AdaptiveQuiz.Api.Services
             var user = await _context.Users.FindAsync(userId);
 
             if (user == null)
-                throw new Exception("User not found");
-
-            if (user.Role == Roles.Admin)
-                throw new Exception("Admins cannot submit bug reports");
+                throw new UserNotFoundException();
 
             var report = new BugReport
             {
@@ -86,14 +84,14 @@ namespace AdaptiveQuiz.Api.Services
             };
 
             if (!allowed.Contains(request.Status))
-                throw new Exception("Invalid status");
+                throw new InvalidBugUpdateException("Invalid status");
 
             if (request.Severity != BugSeverities.Low &&
                 request.Severity != BugSeverities.Medium &&
                 request.Severity != BugSeverities.High &&
                 request.Severity != BugSeverities.Critical)
             {
-                throw new Exception("Invalid severity");
+                throw new InvalidBugUpdateException("Invalid severity");
             }
 
             bug.Status = request.Status;
@@ -110,10 +108,10 @@ namespace AdaptiveQuiz.Api.Services
                 .FirstOrDefaultAsync(x => x.Id == bugId);
 
             if (bug == null)
-                throw new Exception("Bug not found");
+                throw new BugNotFoundException();
 
             if (string.IsNullOrWhiteSpace(request.Comment))
-                throw new Exception("Comment is required");
+                throw new InvalidBugCommentException("Comment is required");
 
             var comment = new BugComment
             {

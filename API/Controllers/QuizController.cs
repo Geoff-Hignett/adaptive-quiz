@@ -178,9 +178,12 @@ public class QuizController : ControllerBase
     {
         var userId = await GetCurrentUserId();
 
-        var result = await _bugService.CreateBugReport(
-            userId,
-            request);
+        var user = await _userService.GetUser(userId);
+
+        if (user.Role == Roles.Admin)
+            return Forbid();
+
+        var result = await _bugService.CreateBugReport(userId, request);
 
         return Ok(result);
     }

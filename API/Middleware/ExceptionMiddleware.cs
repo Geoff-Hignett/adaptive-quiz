@@ -18,10 +18,11 @@ public class ExceptionMiddleware
         {
             await _next(context);
         }
-        catch (QuizAlreadyTakenException ex)
+        catch (ApiException ex)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
             await context.Response.WriteAsJsonAsync(new
             {
                 error = ex.Message
@@ -31,12 +32,12 @@ public class ExceptionMiddleware
         {
             Console.WriteLine(ex);
 
+            context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
             await context.Response.WriteAsJsonAsync(new
             {
-                error = ex.Message,
-                type = ex.GetType().Name
+                error = "An unexpected error occurred."
             });
         }
     }
