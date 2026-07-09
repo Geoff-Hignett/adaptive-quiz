@@ -1,8 +1,8 @@
 ﻿namespace AdaptiveQuiz.Api.Exceptions;
 
-public class InvalidDisplayNameException : ApiException
+public class InvalidBugUpdateException : ApiException
 {
-    public InvalidDisplayNameException(string message)
+    public InvalidBugUpdateException(string message)
         : base(message)
     {
     }

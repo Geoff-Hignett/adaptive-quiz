@@ -1,9 +1,9 @@
 ﻿namespace AdaptiveQuiz.Api.Exceptions
 {
-    public class QuizNotCompletedException : ApiException
+    public class QuizFinishedException : ApiException
     {
-        public QuizNotCompletedException()
-            : base("User has answered all the questions in the quiz")
+        public QuizFinishedException()
+            : base("User has answered all the questions in this month's quiz")
         {
         }
     }

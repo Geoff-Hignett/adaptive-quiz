@@ -29,6 +29,25 @@ namespace AdaptiveQuiz.Api.Services
             return $"{adj}{animal}{number}";
         }
 
+        public bool CanPlay(User user)
+        {
+            return user.Role != Roles.User ||
+                   !user.LastQuizAt.HasValue ||
+                   user.LastQuizAt.Value.Month != DateTime.UtcNow.Month ||
+                   user.LastQuizAt.Value.Year != DateTime.UtcNow.Year;
+        }
+
+        public bool HasMonthlyRestriction(User user)
+        {
+            return user.Role == Roles.User;
+        }
+
+        public bool CanRepeatQuestions(User user)
+        {
+            return user.Role == Roles.Tester ||
+                   user.Role == Roles.Admin;
+        }
+
         public async Task<User> GetOrCreateUserAsync(string email)
         {
             var user = await _context.Users

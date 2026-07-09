@@ -3,7 +3,6 @@ using AdaptiveQuiz.Api.Domain;
 using AdaptiveQuiz.Api.Exceptions;
 using AdaptiveQuiz.Api.Infrastructure;
 using AdaptiveQuiz.Api.Requests;
-using AdaptiveQuiz.Api.Responses;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -21,17 +20,6 @@ public class QuizService
         _userService = userService;
     }
 
-    private static bool HasMonthlyRestriction(User user)
-    {
-        return user.Role == Roles.User;
-    }
-
-    private static bool CanRepeatQuestions(User user)
-    {
-        return user.Role == Roles.Tester ||
-               user.Role == Roles.Admin;
-    }
-
     public async Task<QuizAttempt> StartQuizForUser(string email)
     {
         var user = await _userService.GetOrCreateUserAsync(email);
@@ -42,7 +30,7 @@ public class QuizService
     {
         var now = DateTime.UtcNow;
 
-        if (HasMonthlyRestriction(user) && user.LastQuizAt.HasValue)
+        if (_userService.HasMonthlyRestriction(user) && user.LastQuizAt.HasValue)
         {
             var last = user.LastQuizAt.Value;
 
@@ -60,6 +48,7 @@ public class QuizService
         };
 
         _context.QuizAttempts.Add(attempt);
+
         user.LastQuizAt = now;
 
         await _context.SaveChangesAsync();
@@ -79,12 +68,8 @@ public class QuizService
         if (attempt.UserId != currentUserId)
             throw new UnauthorizedQuizAccessException();
 
-        // Already completed
-        if (attempt.CompletedAt != null)
-            throw new QuizAlreadyTakenException();
-
-        // Reached max questions
-        if (attempt.Questions.Count >= 10)
+        // Current quiz is finished
+        if (attempt.CompletedAt != null || attempt.Questions.Count >= MaxQuestions)
             throw new QuizFinishedException();
 
         // If a question is already active, return it
@@ -112,7 +97,7 @@ public class QuizService
             .Select(h => h.QuestionId)
             .ToListAsync();
 
-        if (CanRepeatQuestions(user))
+        if (_userService.CanRepeatQuestions(user))
         {
             seenQuestionIds.Clear();
         }
@@ -164,7 +149,7 @@ public class QuizService
             throw new UnauthorizedQuizAccessException();
 
         if (attempt.CurrentQuestionId != request.QuestionId)
-            throw new Exception("Invalid question flow");
+            throw new InvalidQuestionFlowException();
 
         attempt.CurrentQuestionId = null;
 
@@ -201,6 +186,7 @@ public class QuizService
             if (request.TimeTakenMs < maxTime)
             {
                 double timeRatio = 1 - ((double)request.TimeTakenMs / maxTime);
+
                 double timeScore = 1000 * timeRatio;
 
                 double difficultyMultiplier = 1 + ((difficultyAtTime - 1) * 0.2);
@@ -256,12 +242,12 @@ public class QuizService
         var questionCount = await _context.QuizAttemptQuestions
             .CountAsync(q => q.QuizAttemptId == attempt.Id);
 
-        Console.WriteLine($"[DEBUG] QuestionCount AFTER SAVE: {questionCount}");
+        //Console.WriteLine($"[DEBUG] QuestionCount AFTER SAVE: {questionCount}");
 
         // Completion check
         if (questionCount >= MaxQuestions)
         {
-            Console.WriteLine("[DEBUG] Setting CompletedAt NOW");
+            //Console.WriteLine("[DEBUG] Setting CompletedAt NOW");
 
             attempt.CompletedAt = DateTime.UtcNow;
 

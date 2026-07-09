@@ -70,6 +70,7 @@ namespace AdaptiveQuiz.Api.Services
             question.Difficulty = request.Difficulty;
             question.Category = request.Category;
             question.Type = request.Type;
+
             question.Data = JsonSerializer.Serialize(data);
 
             await _context.SaveChangesAsync();
