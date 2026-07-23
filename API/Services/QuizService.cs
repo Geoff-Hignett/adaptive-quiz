@@ -118,17 +118,10 @@ public class QuizService
             .ToListAsync();
 
         if (!questions.Any())
-            throw new Exception("No questions available");
+            throw new NoQuestionsAvailableException();
 
         var index = Random.Shared.Next(questions.Count);
         var question = questions[index];
-
-        Console.WriteLine($"Level: {level}");
-        Console.WriteLine($"Seen count: {seenQuestionIds.Count}");
-        Console.WriteLine($"Used in attempt: {usedInAttempt.Count}");
-
-        if (question == null)
-            throw new Exception("No questions available");
 
         // Set current active question
         attempt.CurrentQuestionId = question.Id;
@@ -243,13 +236,9 @@ public class QuizService
         var questionCount = await _context.QuizAttemptQuestions
             .CountAsync(q => q.QuizAttemptId == attempt.Id);
 
-        //Console.WriteLine($"[DEBUG] QuestionCount AFTER SAVE: {questionCount}");
-
         // Completion check
         if (questionCount >= MaxQuestions)
         {
-            //Console.WriteLine("[DEBUG] Setting CompletedAt NOW");
-
             attempt.CompletedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(); // persist completion

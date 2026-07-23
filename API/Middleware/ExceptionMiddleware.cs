@@ -30,8 +30,6 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
-
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 

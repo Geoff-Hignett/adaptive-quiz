@@ -1,7 +1,7 @@
 ﻿using AdaptiveQuiz.Api.Domain;
+using AdaptiveQuiz.Api.DTOs.Requests;
 using AdaptiveQuiz.Api.Exceptions;
 using AdaptiveQuiz.Api.Infrastructure;
-using AdaptiveQuiz.Api.Requests;
 using AdaptiveQuiz.Api.Responses;
 using AdaptiveQuiz.Api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -96,9 +96,6 @@ public class QuizController : ControllerBase
             return Unauthorized("User email not found in token");
 
         var user = await _userService.GetOrCreateUserAsync(userEmail);
-
-        Console.WriteLine($"ROLE FROM DB: {user.Role}");
-        Console.WriteLine($"EMAIL: {user.Email}");
 
         return Ok(new
         {
