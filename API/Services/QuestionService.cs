@@ -1,6 +1,6 @@
 ﻿using AdaptiveQuiz.Api.Data;
 using AdaptiveQuiz.Api.Domain;
-using AdaptiveQuiz.Api.Requests;
+using AdaptiveQuiz.Api.DTOs.Requests;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 

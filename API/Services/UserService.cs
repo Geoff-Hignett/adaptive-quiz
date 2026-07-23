@@ -1,5 +1,6 @@
 ﻿using AdaptiveQuiz.Api.Data;
 using AdaptiveQuiz.Api.Domain;
+using AdaptiveQuiz.Api.DTOs.Responses;
 using AdaptiveQuiz.Api.Exceptions;
 using AdaptiveQuiz.Api.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -91,7 +92,7 @@ namespace AdaptiveQuiz.Api.Services
             return user;
         }
 
-        public async Task<object> UpdateDisplayName(int userId, string displayName)
+        public async Task<DisplayNameResponse> UpdateDisplayName(int userId, string displayName)
         {
             if (string.IsNullOrWhiteSpace(displayName))
                 throw new InvalidDisplayNameException("Display name is required");
@@ -121,9 +122,9 @@ namespace AdaptiveQuiz.Api.Services
 
             await _context.SaveChangesAsync();
 
-            return new
+            return new DisplayNameResponse
             {
-                user.DisplayName
+                DisplayName = user.DisplayName
             };
         }
     }

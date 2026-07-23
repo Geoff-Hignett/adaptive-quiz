@@ -1,8 +1,9 @@
 ﻿using AdaptiveQuiz.Api.Data;
 using AdaptiveQuiz.Api.Domain;
+using AdaptiveQuiz.Api.DTOs.Requests;
+using AdaptiveQuiz.Api.DTOs.Responses;
 using AdaptiveQuiz.Api.Exceptions;
 using AdaptiveQuiz.Api.Infrastructure;
-using AdaptiveQuiz.Api.Requests;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -137,7 +138,7 @@ public class QuizService
         return question;
     }
 
-    public async Task<object> SubmitAnswer(SubmitAnswerRequest request, int currentUserId)
+    public async Task<SubmitAnswerResponse> SubmitAnswer(SubmitAnswerRequest request, int currentUserId)
     {
         var attempt = await _context.QuizAttempts
             .FirstOrDefaultAsync(a => a.Id == request.AttemptId);
@@ -254,16 +255,16 @@ public class QuizService
             await _context.SaveChangesAsync(); // persist completion
         }
 
-        return new
+        return new SubmitAnswerResponse
         {
-            correct,
-            totalPoints,
-            newLevel = attempt.CurrentLevel,
-            isComplete = attempt.CompletedAt != null
+            Correct = correct,
+            TotalPoints = totalPoints,
+            NewLevel = attempt.CurrentLevel,
+            IsComplete = attempt.CompletedAt != null
         };
     }
 
-    public async Task<object> GetResults(int attemptId, int currentUserId)
+    public async Task<QuizResultsResponse> GetResults(int attemptId, int currentUserId)
     {
         var attempt = await _context.QuizAttempts
             .Include(a => a.Questions)
@@ -290,30 +291,30 @@ public class QuizService
         {
             var data = JsonSerializer.Deserialize<QuestionData>(q.Question!.Data);
 
-            return new
+            return new QuizBreakdownItemResponse
             {
-                q.QuestionId,
-                q.Question.Text,
-                q.Correct,
-                q.AnswerGiven,
-                correctAnswer = data?.CorrectAnswer,
-                q.PointsAwarded,
-                q.DifficultyAtTime
+                QuestionId = q.QuestionId,
+                Text = q.Question.Text,
+                Correct = q.Correct,
+                AnswerGiven = q.AnswerGiven,
+                CorrectAnswer = data?.CorrectAnswer,
+                PointsAwarded = q.PointsAwarded,
+                DifficultyAtTime = q.DifficultyAtTime
             };
-        });
+        }).ToList();
 
-        return new
+        return new QuizResultsResponse
         {
-            attempt.Id,
-            attempt.Score,
-            totalQuestions,
-            correctAnswers,
-            accuracy,
-            breakdown
+            Id = attempt.Id,
+            Score = attempt.Score,
+            TotalQuestions = totalQuestions,
+            CorrectAnswers = correctAnswers,
+            Accuracy = accuracy,
+            Breakdown = breakdown
         };
     }
 
-    public async Task<object> GetLeaderboard()
+    public async Task<List<LeaderboardEntryResponse>> GetLeaderboard()
     {
         // users allowed on leaderboard
         var allowedUserIds = await _context.Users
@@ -343,20 +344,19 @@ public class QuizService
             .Where(u => userIds.Contains(u.Id))
             .ToDictionaryAsync(u => u.Id);
 
-        var result = data
-            .Select((x, index) => new
+        return data
+            .Select((x, index) => new LeaderboardEntryResponse
             {
-                userId = x.UserId,
-                rank = index + 1,
-                displayName = users[x.UserId].DisplayName,
-                totalScore = x.TotalScore,
-                attempts = x.Attempts
-            });
-
-        return result;
+                UserId = x.UserId,
+                Rank = index + 1,
+                DisplayName = users[x.UserId].DisplayName,
+                TotalScore = x.TotalScore,
+                Attempts = x.Attempts
+            })
+            .ToList();
     } 
 
-    public async Task<object> GetUserStats(int userId)
+    public async Task<UserStatsResponse> GetUserStats(int userId)
     {
         var attempts = await _context.QuizAttempts
             .Include(a => a.Questions)
@@ -365,13 +365,13 @@ public class QuizService
 
         if (!attempts.Any())
         {
-            return new
+            return new UserStatsResponse
             {
-                totalAttempts = 0,
-                totalScore = 0,
-                averageScore = 0,
-                bestScore = 0,
-                averageAccuracy = 0
+                TotalAttempts = 0,
+                TotalScore = 0,
+                AverageScore = 0,
+                BestScore = 0,
+                AverageAccuracy = 0
             };
         }
 
@@ -389,13 +389,13 @@ public class QuizService
             ? 0
             : Math.Round((double)correctAnswers / totalQuestions * 100, 2);
 
-        return new
+        return new UserStatsResponse
         {
-            totalAttempts,
-            totalScore,
-            averageScore,
-            bestScore,
-            averageAccuracy
+            TotalAttempts = totalAttempts,
+            TotalScore = totalScore,
+            AverageScore = averageScore,
+            BestScore = bestScore,
+            AverageAccuracy = averageAccuracy
         };
     }
 

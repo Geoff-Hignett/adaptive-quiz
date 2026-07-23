@@ -1,6 +1,6 @@
 ﻿using AdaptiveQuiz.Api.Domain;
+using AdaptiveQuiz.Api.DTOs.Requests;
 using AdaptiveQuiz.Api.Infrastructure;
-using AdaptiveQuiz.Api.Requests;
 using AdaptiveQuiz.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

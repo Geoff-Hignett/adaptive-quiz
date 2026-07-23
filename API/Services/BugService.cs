@@ -1,8 +1,8 @@
 ﻿using AdaptiveQuiz.Api.Data;
 using AdaptiveQuiz.Api.Domain;
+using AdaptiveQuiz.Api.DTOs.Requests;
 using AdaptiveQuiz.Api.Exceptions;
 using AdaptiveQuiz.Api.Infrastructure;
-using AdaptiveQuiz.Api.Requests;
 using AdaptiveQuiz.Api.Responses;
 using Microsoft.EntityFrameworkCore;
 

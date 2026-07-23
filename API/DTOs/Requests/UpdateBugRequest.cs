@@ -1,4 +1,4 @@
-﻿namespace AdaptiveQuiz.Api.Requests;
+﻿namespace AdaptiveQuiz.Api.DTOs.Requests;
 
 public class UpdateBugRequest
 {
