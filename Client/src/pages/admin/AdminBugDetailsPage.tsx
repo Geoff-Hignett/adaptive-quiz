@@ -45,9 +45,7 @@ export default function AdminBugDetailsPage() {
 
                 <div className="rounded-xl border border-gray-800 bg-gray-900 p-6 lg:col-span-2">
                     <h2 className="mb-6 text-xl font-semibold">Bug Details</h2>
-
                     <h3 className="mb-3 text-2xl font-semibold">{bug.title}</h3>
-
                     <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-gray-400">
                         <BugSeverityBadge severity={bug.severity} />
 
@@ -63,10 +61,8 @@ export default function AdminBugDetailsPage() {
                             Reported by <span className="text-white">{bug.displayName}</span>
                         </span>
                     </div>
-
                     <div>
                         <h4 className="mb-2 font-medium">Description</h4>
-
                         <p className="whitespace-pre-wrap leading-7 text-gray-200">{bug.description}</p>
                     </div>
                 </div>
@@ -75,11 +71,9 @@ export default function AdminBugDetailsPage() {
 
                 <div className="rounded-xl border border-gray-800 bg-gray-900 p-6 lg:col-span-1">
                     <h2 className="mb-4 text-xl font-semibold">Manage</h2>
-
                     <div className="space-y-5">
                         <div>
                             <label className="mb-1 block text-sm">Status</label>
-
                             <select
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
@@ -93,7 +87,6 @@ export default function AdminBugDetailsPage() {
 
                         <div>
                             <label className="mb-1 block text-sm">Severity</label>
-
                             <select
                                 value={severity}
                                 onChange={(e) => setSeverity(e.target.value)}
@@ -128,7 +121,6 @@ export default function AdminBugDetailsPage() {
 
             <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
                 <h2 className="mb-6 text-xl font-semibold">Conversation</h2>
-
                 <div className="space-y-4">
                     <BugConversation comments={comments} />
                 </div>
@@ -138,14 +130,12 @@ export default function AdminBugDetailsPage() {
 
             <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
                 <h2 className="mb-4 text-xl font-semibold">Add Comment</h2>
-
                 <textarea
                     rows={5}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     className="mb-4 w-full rounded border border-gray-700 bg-gray-950 p-3"
                 />
-
                 <button
                     onClick={async () => {
                         if (!comment.trim()) return;

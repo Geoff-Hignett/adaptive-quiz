@@ -39,14 +39,12 @@ export default function QuestionForm({ initialValues, submitLabel, isSubmitting,
         <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-gray-800 bg-gray-900 p-6">
             <div className="space-y-2">
                 <label className="text-sm text-gray-300">Question</label>
-
                 <textarea value={text} onChange={(e) => setText(e.target.value)} className="w-full rounded-lg bg-gray-950 p-3 text-white" rows={3} />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                     <label className="text-sm text-gray-300">Difficulty</label>
-
                     <input
                         type="number"
                         min={1}
@@ -59,7 +57,6 @@ export default function QuestionForm({ initialValues, submitLabel, isSubmitting,
 
                 <div className="space-y-2">
                     <label className="text-sm text-gray-300">Category</label>
-
                     <input value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-lg bg-gray-950 p-3 text-white" />
                 </div>
             </div>
@@ -80,7 +77,6 @@ export default function QuestionForm({ initialValues, submitLabel, isSubmitting,
 
             <div className="space-y-2">
                 <label className="text-sm text-gray-300">Correct Answer</label>
-
                 <input
                     value={correctAnswer}
                     onChange={(e) => setCorrectAnswer(e.target.value)}

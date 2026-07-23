@@ -9,9 +9,7 @@ export default function BugConversation({ comments }: Props) {
         return (
             <div className="rounded-xl border border-dashed border-gray-700 py-10 text-center">
                 <div className="mb-2 text-4xl">💬</div>
-
                 <p className="font-medium">No conversation yet</p>
-
                 <p className="mt-2 text-sm text-gray-400">Messages between you and the administrator will appear here.</p>
             </div>
         );
