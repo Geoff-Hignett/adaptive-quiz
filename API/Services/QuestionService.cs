@@ -15,14 +15,14 @@ namespace AdaptiveQuiz.Api.Services
             _context = context;
         }
 
-        public async Task<List<Question>> GetAllQuestions()
+        public async Task<List<Question>> GetAllQuestionsAsync()
         {
             return await _context.Questions
                 .OrderBy(q => q.Difficulty)
                 .ToListAsync();
         }
 
-        public async Task<Question> CreateQuestion(CreateQuestionRequest request)
+        public async Task<Question> CreateQuestionAsync(CreateQuestionRequest request)
         {
             var data = new QuestionData
             {
@@ -46,13 +46,13 @@ namespace AdaptiveQuiz.Api.Services
             return question;
         }
 
-        public async Task<Question?> GetQuestionById(int id)
+        public async Task<Question?> GetQuestionByIdAsync(int id)
         {
             return await _context.Questions
                 .FirstOrDefaultAsync(q => q.Id == id);
         }
 
-        public async Task<Question?> UpdateQuestion(int id, CreateQuestionRequest request)
+        public async Task<Question?> UpdateQuestionAsync(int id, CreateQuestionRequest request)
         {
             var question = await _context.Questions
                 .FirstOrDefaultAsync(q => q.Id == id);

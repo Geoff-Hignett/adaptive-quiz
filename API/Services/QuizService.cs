@@ -21,13 +21,13 @@ public class QuizService
         _userService = userService;
     }
 
-    public async Task<QuizAttempt> StartQuizForUser(string email)
+    public async Task<QuizAttempt> StartQuizForUserAsync(string email)
     {
         var user = await _userService.GetOrCreateUserAsync(email);
-        return await StartQuiz(user);
+        return await StartQuizAsync(user);
     }
 
-    private async Task<QuizAttempt> StartQuiz(User user)
+    private async Task<QuizAttempt> StartQuizAsync(User user)
     {
         var now = DateTime.UtcNow;
 
@@ -57,7 +57,7 @@ public class QuizService
         return attempt;
     }
 
-    public async Task<Question> GetNextQuestion(int attemptId, int currentUserId)
+    public async Task<Question> GetNextQuestionAsync(int attemptId, int currentUserId)
     {
         var attempt = await _context.QuizAttempts
             .Include(a => a.Questions)
@@ -131,7 +131,7 @@ public class QuizService
         return question;
     }
 
-    public async Task<SubmitAnswerResponse> SubmitAnswer(SubmitAnswerRequest request, int currentUserId)
+    public async Task<SubmitAnswerResponse> SubmitAnswerAsync(SubmitAnswerRequest request, int currentUserId)
     {
         var attempt = await _context.QuizAttempts
             .FirstOrDefaultAsync(a => a.Id == request.AttemptId);
@@ -253,7 +253,7 @@ public class QuizService
         };
     }
 
-    public async Task<QuizResultsResponse> GetResults(int attemptId, int currentUserId)
+    public async Task<QuizResultsResponse> GetResultsAsync(int attemptId, int currentUserId)
     {
         var attempt = await _context.QuizAttempts
             .Include(a => a.Questions)
@@ -303,7 +303,7 @@ public class QuizService
         };
     }
 
-    public async Task<List<LeaderboardEntryResponse>> GetLeaderboard()
+    public async Task<List<LeaderboardEntryResponse>> GetLeaderboardAsync()
     {
         // users allowed on leaderboard
         var allowedUserIds = await _context.Users
@@ -345,7 +345,7 @@ public class QuizService
             .ToList();
     } 
 
-    public async Task<UserStatsResponse> GetUserStats(int userId)
+    public async Task<UserStatsResponse> GetUserStatsAsync(int userId)
     {
         var attempts = await _context.QuizAttempts
             .Include(a => a.Questions)

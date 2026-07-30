@@ -17,7 +17,7 @@ namespace AdaptiveQuiz.Api.Services
             _context = context;
         }
 
-        public async Task<BugReport> CreateBugReport(int userId, CreateBugReportRequest request)
+        public async Task<BugReport> CreateBugReportAsync(int userId, CreateBugReportRequest request)
         {
             var user = await _context.Users.FindAsync(userId);
 
@@ -41,7 +41,7 @@ namespace AdaptiveQuiz.Api.Services
             return report;
         }
 
-        public async Task<List<BugReportResponse>> GetAllBugReports()
+        public async Task<List<BugReportResponse>> GetAllBugReportsAsync()
         {
             return await _context.BugReports
                 .Include(x => x.User)
@@ -59,7 +59,7 @@ namespace AdaptiveQuiz.Api.Services
                 .ToListAsync();
         }
 
-        public async Task<List<BugReport>> GetUserBugReports(int userId)
+        public async Task<List<BugReport>> GetUserBugReportsAsync(int userId)
         {
             return await _context.BugReports
                 .Where(x => x.UserId == userId)
@@ -67,7 +67,7 @@ namespace AdaptiveQuiz.Api.Services
                 .ToListAsync();
         }
 
-        public async Task<BugReport?> UpdateBug(int id, UpdateBugRequest request)
+        public async Task<BugReport?> UpdateBugAsync(int id, UpdateBugRequest request)
         {
             var bug = await _context.BugReports
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -102,7 +102,7 @@ namespace AdaptiveQuiz.Api.Services
             return bug;
         }
 
-        public async Task<BugComment> AddBugComment(int bugId, int userId, CreateBugCommentRequest request)
+        public async Task<BugComment> AddBugCommentAsync(int bugId, int userId, CreateBugCommentRequest request)
         {
             var bug = await _context.BugReports
                 .FirstOrDefaultAsync(x => x.Id == bugId);
@@ -128,7 +128,7 @@ namespace AdaptiveQuiz.Api.Services
             return comment;
         }
 
-        public async Task<List<BugCommentResponse>> GetBugComments(int bugId)
+        public async Task<List<BugCommentResponse>> GetBugCommentsAsync(int bugId)
         {
             return await _context.BugComments
                 .Include(x => x.User)
@@ -145,7 +145,7 @@ namespace AdaptiveQuiz.Api.Services
                 .ToListAsync();
         }
 
-        public async Task<BugReportResponse?> GetBugReport(int id)
+        public async Task<BugReportResponse?> GetBugReportAsync(int id)
         {
             return await _context.BugReports
                 .Include(x => x.User)
@@ -163,7 +163,7 @@ namespace AdaptiveQuiz.Api.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UserOwnsBug(int bugId, int userId)
+        public async Task<bool> UserOwnsBugAsync(int bugId, int userId)
         {
             return await _context.BugReports
                 .AnyAsync(x =>
@@ -171,7 +171,7 @@ namespace AdaptiveQuiz.Api.Services
                     x.UserId == userId);
         }
 
-        public async Task<BugReportResponse?> GetUserBug(int bugId, int userId)
+        public async Task<BugReportResponse?> GetUserBugAsync(int bugId, int userId)
         {
             var bug = await _context.BugReports
                 .Where(x =>

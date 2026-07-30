@@ -25,7 +25,7 @@ public class AdminQuestionsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetQuestions()
+    public async Task<IActionResult> GetQuestionsAsync()
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -37,7 +37,7 @@ public class AdminQuestionsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var questions = await _questionService.GetAllQuestions();
+        var questions = await _questionService.GetAllQuestionsAsync();
 
         var result = questions.Select(q =>
         {
@@ -59,8 +59,7 @@ public class AdminQuestionsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateQuestion(
-    [FromBody] CreateQuestionRequest request)
+    public async Task<IActionResult> CreateQuestionAsync([FromBody] CreateQuestionRequest request)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -72,13 +71,13 @@ public class AdminQuestionsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var question = await _questionService.CreateQuestion(request);
+        var question = await _questionService.CreateQuestionAsync(request);
 
         return Ok(question);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetQuestion(int id)
+    public async Task<IActionResult> GetQuestionAsync(int id)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -90,7 +89,7 @@ public class AdminQuestionsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var question = await _questionService.GetQuestionById(id);
+        var question = await _questionService.GetQuestionByIdAsync(id);
 
         if (question == null)
             return NotFound();
@@ -110,9 +109,7 @@ public class AdminQuestionsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateQuestion(
-    int id,
-    [FromBody] CreateQuestionRequest request)
+    public async Task<IActionResult> UpdateQuestionAsync(int id, [FromBody] CreateQuestionRequest request)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -124,9 +121,7 @@ public class AdminQuestionsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var question = await _questionService.UpdateQuestion(
-            id,
-            request);
+        var question = await _questionService.UpdateQuestionAsync(id, request);
 
         if (question == null)
             return NotFound();

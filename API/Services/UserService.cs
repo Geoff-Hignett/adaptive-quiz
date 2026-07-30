@@ -72,7 +72,7 @@ namespace AdaptiveQuiz.Api.Services
             return user;
         }
 
-        public async Task<int> GetUserIdFromEmail(string email)
+        public async Task<int> GetUserIdFromEmailAsync(string email)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == email);
@@ -83,7 +83,7 @@ namespace AdaptiveQuiz.Api.Services
             return user.Id;
         }
 
-        public async Task<User> GetUser(int userId)
+        public async Task<User> GetUserAsync(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -92,7 +92,7 @@ namespace AdaptiveQuiz.Api.Services
             return user;
         }
 
-        public async Task<DisplayNameResponse> UpdateDisplayName(int userId, string displayName)
+        public async Task<DisplayNameResponse> UpdateDisplayNameAsync(int userId, string displayName)
         {
             if (string.IsNullOrWhiteSpace(displayName))
                 throw new InvalidDisplayNameException("Display name is required");

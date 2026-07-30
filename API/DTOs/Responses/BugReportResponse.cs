@@ -1,4 +1,4 @@
-﻿namespace AdaptiveQuiz.Api.Responses;
+﻿namespace AdaptiveQuiz.Api.DTOs.Responses;
 
 public class BugReportResponse
 {

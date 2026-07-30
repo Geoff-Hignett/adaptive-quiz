@@ -2,7 +2,7 @@
 using AdaptiveQuiz.Api.DTOs.Requests;
 using AdaptiveQuiz.Api.Exceptions;
 using AdaptiveQuiz.Api.Infrastructure;
-using AdaptiveQuiz.Api.Responses;
+using AdaptiveQuiz.Api.DTOs.Responses;
 using AdaptiveQuiz.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,14 +28,14 @@ public class QuizController : ControllerBase
 
     [Authorize]
     [HttpPost("start")]
-    public async Task<IActionResult> StartQuiz()
+    public async Task<IActionResult> StartQuizAsync()
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
         if (string.IsNullOrEmpty(userEmail))
             return Unauthorized("User email not found in token");
 
-        var attempt = await _quizService.StartQuizForUser(userEmail);
+        var attempt = await _quizService.StartQuizForUserAsync(userEmail);
 
         return Ok(new
         {
@@ -46,11 +46,11 @@ public class QuizController : ControllerBase
 
     [Authorize]
     [HttpGet("next")]
-    public async Task<IActionResult> GetNext(int attemptId)
+    public async Task<IActionResult> GetNextAsync(int attemptId)
     {
         var userId = await GetCurrentUserId();
 
-        var question = await _quizService.GetNextQuestion(attemptId, userId);
+        var question = await _quizService.GetNextQuestionAsync(attemptId, userId);
 
         var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
 
@@ -66,29 +66,29 @@ public class QuizController : ControllerBase
 
     [Authorize]
     [HttpPost("answer")]
-    public async Task<IActionResult> SubmitAnswer([FromBody] SubmitAnswerRequest request)
+    public async Task<IActionResult> SubmitAnswerAsync([FromBody] SubmitAnswerRequest request)
     {
         var userId = await GetCurrentUserId();
 
-        var result = await _quizService.SubmitAnswer(request, userId);
+        var result = await _quizService.SubmitAnswerAsync(request, userId);
 
         return Ok(result);
     }
 
     [Authorize]
     [HttpGet("results")]
-    public async Task<IActionResult> GetResults(int attemptId)
+    public async Task<IActionResult> GetResultsAsync(int attemptId)
     {
         var userId = await GetCurrentUserId();
 
-        var result = await _quizService.GetResults(attemptId, userId);
+        var result = await _quizService.GetResultsAsync(attemptId, userId);
 
         return Ok(result);
     }
 
     [Authorize]
     [HttpGet("me")]
-    public async Task<IActionResult> Me()
+    public async Task<IActionResult> MeAsync()
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -114,64 +114,64 @@ public class QuizController : ControllerBase
 
     [Authorize]
     [HttpPut("display-name")]
-    public async Task<IActionResult> UpdateDisplayName([FromBody] UpdateDisplayNameRequest request)
+    public async Task<IActionResult> UpdateDisplayNameAsync([FromBody] UpdateDisplayNameRequest request)
     {
         var userId = await GetCurrentUserId();
 
-        var result = await _userService.UpdateDisplayName(userId, request.DisplayName);
+        var result = await _userService.UpdateDisplayNameAsync(userId, request.DisplayName);
 
         return Ok(result);
     }
 
     [HttpGet("leaderboard")]
-    public async Task<IActionResult> GetLeaderboard()
+    public async Task<IActionResult> GetLeaderboardAsync()
     {
-        var result = await _quizService.GetLeaderboard();
+        var result = await _quizService.GetLeaderboardAsync();
 
         return Ok(result);
     }
 
     [Authorize]
     [HttpGet("stats")]
-    public async Task<IActionResult> GetStats()
+    public async Task<IActionResult> GetStatsAsync()
     {
         var userId = await GetCurrentUserId();
 
-        var result = await _quizService.GetUserStats(userId);
+        var result = await _quizService.GetUserStatsAsync(userId);
 
         return Ok(result);
     }
 
     [Authorize]
     [HttpPost("bugs")]
-    public async Task<IActionResult> CreateBugReport([FromBody] CreateBugReportRequest request)
+    public async Task<IActionResult> CreateBugReportAsync([FromBody] CreateBugReportRequest request)
     {
         var userId = await GetCurrentUserId();
 
-        var user = await _userService.GetUser(userId);
+        var user = await _userService.GetUserAsync(userId);
 
         if (user.Role == Roles.Admin)
             return Forbid();
 
-        var result = await _bugService.CreateBugReport(userId, request);
+        var result = await _bugService.CreateBugReportAsync(userId, request);
 
         return Ok(result);
     }
 
     [Authorize]
     [HttpGet("bugs")]
-    public async Task<IActionResult> GetMyBugReports()
+    public async Task<IActionResult> GetMyBugReportsAsync()
     {
         var userId = await GetCurrentUserId();
 
-        var result = await _bugService.GetUserBugReports(userId);
+        var result = await _bugService.GetUserBugReportsAsync(userId);
 
         return Ok(result);
     }
 
     [Authorize]
     [HttpGet("bugs/{id}")]
-    public async Task<IActionResult> GetBug(int id)
+    public async Task<IActionResult> GetBugAsync(int id)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -180,7 +180,7 @@ public class QuizController : ControllerBase
 
         var user = await _userService.GetOrCreateUserAsync(userEmail);
 
-        var bug = await _bugService.GetUserBug(id, user.Id);
+        var bug = await _bugService.GetUserBugAsync(id, user.Id);
 
         if (bug == null)
             return Forbid();
@@ -189,7 +189,7 @@ public class QuizController : ControllerBase
     }
 
     [HttpGet("bugs/{id}/comments")]
-    public async Task<IActionResult> GetBugComments(int id)
+    public async Task<IActionResult> GetBugCommentsAsync(int id)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -198,18 +198,18 @@ public class QuizController : ControllerBase
 
         var user = await _userService.GetOrCreateUserAsync(userEmail);
 
-        var ownsBug = await _bugService.UserOwnsBug(id, user.Id);
+        var ownsBug = await _bugService.UserOwnsBugAsync(id, user.Id);
 
         if (!ownsBug)
             return Forbid();
 
-        var comments = await _bugService.GetBugComments(id);
+        var comments = await _bugService.GetBugCommentsAsync(id);
 
         return Ok(comments);
     }
 
     [HttpPost("bugs/{id}/comments")]
-    public async Task<IActionResult> AddBugComment(int id, [FromBody] CreateBugCommentRequest request)
+    public async Task<IActionResult> AddBugCommentAsync(int id, [FromBody] CreateBugCommentRequest request)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -218,12 +218,12 @@ public class QuizController : ControllerBase
 
         var user = await _userService.GetOrCreateUserAsync(userEmail);
 
-        var ownsBug = await _bugService.UserOwnsBug(id, user.Id);
+        var ownsBug = await _bugService.UserOwnsBugAsync(id, user.Id);
 
         if (!ownsBug)
             return Forbid();
 
-            var comment = await _bugService.AddBugComment(id, user.Id, request);
+            var comment = await _bugService.AddBugCommentAsync(id, user.Id, request);
 
             return Ok(new BugCommentResponse
             {
@@ -242,6 +242,6 @@ public class QuizController : ControllerBase
         if (string.IsNullOrEmpty(userEmail))
             throw new UserNotAuthenticatedException();
 
-        return await _userService.GetUserIdFromEmail(userEmail);
+        return await _userService.GetUserIdFromEmailAsync(userEmail);
     }
 }

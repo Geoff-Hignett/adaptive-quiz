@@ -24,7 +24,7 @@ public class AdminBugsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetBugReports()
+    public async Task<IActionResult> GetBugReportsAsync()
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -36,15 +36,13 @@ public class AdminBugsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var reports = await _bugService.GetAllBugReports();
+        var reports = await _bugService.GetAllBugReportsAsync();
 
         return Ok(reports);
     }
 
     [HttpPut("{id}/status")]
-    public async Task<IActionResult> UpdateStatus(
-    int id,
-    [FromBody] UpdateBugRequest request)
+    public async Task<IActionResult> UpdateStatusAsync(int id, [FromBody] UpdateBugRequest request)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -58,7 +56,7 @@ public class AdminBugsController : ControllerBase
 
         try
         {
-            var bug = await _bugService.UpdateBug(id, request);
+            var bug = await _bugService.UpdateBugAsync(id, request);
 
             if (bug == null)
                 return NotFound();
@@ -72,7 +70,7 @@ public class AdminBugsController : ControllerBase
     }
 
     [HttpGet("{id}/comments")]
-    public async Task<IActionResult> GetComments(int id)
+    public async Task<IActionResult> GetCommentsAsync(int id)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -84,15 +82,13 @@ public class AdminBugsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var comments = await _bugService.GetBugComments(id);
+        var comments = await _bugService.GetBugCommentsAsync(id);
 
         return Ok(comments);
     }
 
     [HttpPost("{id}/comments")]
-    public async Task<IActionResult> AddComment(
-    int id,
-    [FromBody] CreateBugCommentRequest request)
+    public async Task<IActionResult> AddCommentAsync(int id, [FromBody] CreateBugCommentRequest request)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -106,7 +102,7 @@ public class AdminBugsController : ControllerBase
 
         try
         {
-            var comment = await _bugService.AddBugComment(
+            var comment = await _bugService.AddBugCommentAsync(
                 id,
                 user.Id,
                 request);
@@ -127,7 +123,7 @@ public class AdminBugsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetBug(int id)
+    public async Task<IActionResult> GetBugAsync(int id)
     {
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -139,7 +135,7 @@ public class AdminBugsController : ControllerBase
         if (user.Role != Roles.Admin)
             return Forbid();
 
-        var bug = await _bugService.GetBugReport(id);
+        var bug = await _bugService.GetBugReportAsync(id);
 
         if (bug == null)
             return NotFound();
