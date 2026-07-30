@@ -1,5 +1,6 @@
 ﻿using AdaptiveQuiz.Api.Domain;
 using AdaptiveQuiz.Api.DTOs.Requests;
+using AdaptiveQuiz.Api.DTOs.Responses;
 using AdaptiveQuiz.Api.Infrastructure;
 using AdaptiveQuiz.Api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -96,17 +97,17 @@ public class AdminQuestionsController : ControllerBase
 
         var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
 
-        return Ok(new
-        {
-            question.Id,
-            question.Text,
-            question.Difficulty,
-            question.Category,
-            question.Type,
-            options = data?.Options,
-            correctAnswer = data?.CorrectAnswer
-        });
-    }
+		return Ok(new QuestionResponse
+		{
+			Id = question.Id,
+			Text = question.Text,
+			Difficulty = question.Difficulty,
+			Category = question.Category,
+			Type = question.Type,
+			Options = data?.Options ?? new List<string>(),
+			CorrectAnswer = data?.CorrectAnswer
+		});
+	}
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateQuestionAsync(int id, [FromBody] CreateQuestionRequest request)

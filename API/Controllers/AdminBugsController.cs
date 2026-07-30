@@ -1,5 +1,6 @@
 ﻿using AdaptiveQuiz.Api.Domain;
 using AdaptiveQuiz.Api.DTOs.Requests;
+using AdaptiveQuiz.Api.DTOs.Responses;
 using AdaptiveQuiz.Api.Infrastructure;
 using AdaptiveQuiz.Api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -107,15 +108,15 @@ public class AdminBugsController : ControllerBase
                 user.Id,
                 request);
 
-            return Ok(new
-            {
-                comment.Id,
-                comment.BugReportId,
-                comment.UserId,
-                comment.Comment,
-                comment.CreatedAt
-            });
-        }
+			return Ok(new CreateBugCommentResponse
+			{
+				Id = comment.Id,
+				BugReportId = comment.BugReportId,
+				UserId = comment.UserId,
+				Comment = comment.Comment,
+				CreatedAt = comment.CreatedAt
+			});
+		}
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
