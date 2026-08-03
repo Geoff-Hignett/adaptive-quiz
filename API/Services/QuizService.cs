@@ -154,7 +154,12 @@ public class QuizService
             throw new QuestionNotFoundException();
 
         // Determine correctness using question data (MCQ-based)
-        var data = JsonSerializer.Deserialize<QuestionData>(question.Data);
+        var data = JsonSerializer.Deserialize<QuestionData>(
+            question.Data,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
         if (data == null)
             throw new InvalidOperationException("Question data is invalid.");
@@ -278,7 +283,12 @@ public class QuizService
 
         var breakdown = attempt.Questions.Select(q =>
         {
-            var data = JsonSerializer.Deserialize<QuestionData>(q.Question!.Data);
+            var data = JsonSerializer.Deserialize<QuestionData>(
+                q.Question!.Data,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
             return new QuizBreakdownItemResponse
             {
