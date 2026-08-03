@@ -11,9 +11,7 @@ public class QuizAttempt
 
     public DateTime StartedAt { get; set; }
     public DateTime? CompletedAt { get; set; }
-
     public int StartingLevel { get; set; }
     public int CurrentLevel { get; set; }
-
     public int Score { get; set; }
 }

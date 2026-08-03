@@ -11,7 +11,6 @@ public class BugReport
     public string Description { get; set; } = "";
     public string Status { get; set; } = "Open";
     public string Severity { get; set; } = "Medium";
-
     public DateTime CreatedAt { get; set; }
 
     public List<BugComment> Comments { get; set; } = [];
