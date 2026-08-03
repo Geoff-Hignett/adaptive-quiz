@@ -150,5 +150,47 @@ namespace AdaptiveQuiz.Api.Tests.Services
                 .Should()
                 .BeLessThanOrEqualTo(1);
         }
+
+        [Fact]
+        public async Task GetNextQuestionAsync_ShouldThrow_WhenAttemptBelongsToAnotherUser()
+        {
+            // Arrange
+            var context = TestDbContextFactory.Create();
+
+            var owner = new User
+            {
+                Email = "owner@test.com"
+            };
+
+            var otherUser = new User
+            {
+                Email = "other@test.com"
+            };
+
+            context.Users.AddRange(owner, otherUser);
+            await context.SaveChangesAsync();
+
+            var attempt = new QuizAttempt
+            {
+                UserId = owner.Id,
+                CurrentLevel = 1,
+                StartingLevel = 1,
+                StartedAt = DateTime.UtcNow
+            };
+
+            context.QuizAttempts.Add(attempt);
+            await context.SaveChangesAsync();
+
+            var userService = new UserService(context);
+            var quizService = new QuizService(context, userService);
+
+            // Act
+            Func<Task> act = () =>
+                quizService.GetNextQuestionAsync(attempt.Id, otherUser.Id);
+
+            // Assert
+            await act.Should()
+                .ThrowAsync<UnauthorizedQuizAccessException>();
+        }
     }
 }
