@@ -1,6 +1,32 @@
-# ===== Global / OS =====
-.DS_Store
-Thumbs.db
+# ===== .NET =====
+**/bin/
+**/obj/
+.vs/
+.idea/
+*.suo
+*.user
+
+# ===== ASP.NET =====
+**/appsettings.Development.json
+
+# ===== SQLite =====
+**/*.db
+**/*.db-shm
+**/*.db-wal
+
+# ===== Node =====
+node_modules/
+dist/
+dist-ssr/
+
+# ===== Editor =====
+.vscode/*
+!.vscode/extensions.json
+
+# ===== Environment =====
+.env
+.env.*
+*.local
 
 # ===== Logs =====
 *.log
@@ -10,32 +36,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# ===== Env =====
-.env
-.env.*
-*.local
+# ===== OS =====
+.DS_Store
+Thumbs.db
 
 # ===== Docs =====
-/docs/todo.md
-
-# ===== Node =====
-node_modules/
-dist/
-dist-ssr/
-
-# ===== IDE =====
-.vscode/*
-!.vscode/extensions.json
-.idea/
-*.suo
-*.user
-
-# Build
-**/bin/
-**/obj/
-
-# Visual Studio
-.vs/
-
-# Rider
-.idea/
+docs/todo.md
+Client/todo.md
