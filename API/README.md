@@ -155,7 +155,7 @@ On startup the API automatically:
 - Creates the database if required
 - Seeds the question database when empty
 
-SQLite database files are intentionally excluded from source control.
+SQLite database files are excluded from source control and are generated automatically when the application starts.
 
 ---
 
@@ -190,15 +190,35 @@ Tests cover areas including:
 dotnet restore
 ```
 
+### Configure authentication
+
+Create an `appsettings.Development.json` file from `appsettings.Development.example.json` and populate the Supabase settings with your own project values.
+
+Example:
+
+```json
+{
+    "Supabase": {
+        "Authority": "https://your-project-id.supabase.co/auth/v1",
+        "Audience": "authenticated"
+    }
+}
+```
+
+The Authority value can be found in your Supabase project.
+
 ### Run
 
 ```bash
 dotnet run
 ```
 
-During development Swagger UI is available for exploring and testing endpoints.
+During development the API will automatically:
 
----
+- Apply any pending Entity Framework Core migrations
+- Create the SQLite database if it does not already exist
+- Seed the database with sample quiz questions if it is empty
+- Launch Swagger UI for testing API endpoints
 
 ## Future Improvements
 

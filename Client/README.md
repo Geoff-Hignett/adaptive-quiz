@@ -136,25 +136,26 @@ npm install
 
 ### Configure environment
 
-Create a `.env` file from `.env.example` and configure your Supabase credentials.
+Create a `.env` file from `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Create a Supabase project at https://supabase.com, then navigate to **Project Settings → API** and copy your Project URL and Anon Key into the `.env` file.
+
+| Variable                     | Description                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------------------- |
+| `VITE_SUPABASE_URL`          | Your Supabase project URL                                                          |
+| `VITE_SUPABASE_ANON_KEY`     | Your Supabase anon/public key                                                      |
+| `VITE_SUPABASE_REDIRECT_URL` | Redirect URL after authentication (typically `http://localhost:5173`)              |
+| `VITE_API_BASE_URL`          | URL of the running Adaptive Quiz API (typically `https://localhost:7148/api/quiz`) |
 
 ### Run
 
 ```bash
 npm run dev
 ```
-
----
-
-## Future Improvements
-
-Potential future enhancements include:
-
-- Improved mobile interactions
-- Better loading skeletons
-- Enhanced accessibility
-- Expanded analytics dashboards
-- Additional quiz visualisations
 
 ---
 

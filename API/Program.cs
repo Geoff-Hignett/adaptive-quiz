@@ -47,8 +47,8 @@ builder.Services.AddScoped<QuestionService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = "https://kiccvhqmcsyvmbucpstp.supabase.co/auth/v1";
-        options.Audience = "authenticated";
+        options.Authority = builder.Configuration["Supabase:Authority"]!;
+        options.Audience = builder.Configuration["Supabase:Audience"]!;
 
         options.TokenValidationParameters = new TokenValidationParameters
         {

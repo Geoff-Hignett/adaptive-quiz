@@ -37,33 +37,6 @@ AdaptiveQuiz/
 
 ---
 
-## Tech Stack
-
-### Frontend
-
-- React
-- TypeScript
-- React Router
-- TanStack Query (React Query)
-- Tailwind CSS
-- Supabase Authentication
-
-### Backend
-
-- .NET 8 (ASP.NET Core Web API)
-- Entity Framework Core
-- SQLite (development)
-- JWT Authentication
-- Swagger/OpenAPI
-
-### Testing
-
-- xUnit
-- FluentAssertions
-- EF Core InMemory
-
----
-
 ## Features
 
 ### Quiz Engine
