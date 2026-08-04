@@ -1,73 +1,127 @@
 # Adaptive Quiz Platform
 
-A full-stack adaptive quiz application built with a modern TypeScript frontend and a .NET backend.  
-The platform delivers a dynamic, performance-driven quiz experience where question difficulty adjusts in real time based on user performance.
+A full-stack adaptive quiz application built with **React**, **TypeScript**, and **ASP.NET Core (.NET 8)**.
+
+The platform delivers a dynamic quiz experience where question difficulty adapts in real time based on user performance. It combines adaptive gameplay with authentication, analytics, leaderboards, and an admin management system.
 
 ---
 
-## 🚀 Overview
+## Overview
 
-The Adaptive Quiz Platform is designed to create an engaging, repeatable quiz experience with:
+The Adaptive Quiz Platform was built to explore the design and implementation of a complete modern web application, covering both frontend and backend development.
 
-- Dynamic difficulty adjustment
+Key areas include:
+
+- Adaptive quiz engine
 - Time-based scoring
-- Monthly participation cycles
-- Performance analytics and leaderboard tracking
-
-The system prioritises **low-friction access**, **non-repetitive content**, and **scalable architecture**.
+- User progression tracking
+- Authentication and authorisation
+- REST API design
+- Database modelling
+- Unit testing
+- Admin tooling
+- Bug reporting system
 
 ---
 
-## 🧱 Monorepo Structure
+## Repository Structure
 
+```
 AdaptiveQuiz/
-├── API/ # .NET 8 Web API 
-├── CLIENT/ # React + TypeScript app
-├── docs/ # Product specs, notes, and supporting documentation
-└── README.md # You are here
+├── API/                    # ASP.NET Core Web API
+├── AdaptiveQuiz.Api.Tests/ # xUnit test project
+├── Client/                 # React + TypeScript frontend
+├── docs/                   # Product specification and supporting docs
+└── README.md
+```
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
-### Frontend (FE)
+### Frontend
 
 - React
 - TypeScript
-- TanStack Query (React Query)
-- Supabase (authentication)
 - React Router
+- TanStack Query (React Query)
 - Tailwind CSS
+- Supabase Authentication
 
-### Backend (BE)
+### Backend
 
 - .NET 8 (ASP.NET Core Web API)
 - Entity Framework Core
 - SQLite (development)
-- Clean architecture (Controllers, Services, Domain)
+- JWT Authentication
+- Swagger/OpenAPI
+
+### Testing
+
+- xUnit
+- FluentAssertions
+- EF Core InMemory
 
 ---
 
-## ✨ Core Features
+## Features
 
-- 🔐 Passwordless authentication (magic link via Supabase)
-- 🧠 Adaptive difficulty (question level adjusts per answer)
-- ⏱️ Time-based scoring system
-- 🔁 Monthly quiz restriction (for standard users)
-- 🏆 Global leaderboard
-- 📊 User performance analytics
-- 🧪 Tester/Admin roles for unrestricted access
-- 🎯 Non-repeating question system
+### Quiz Engine
+
+- Adaptive question difficulty
+- Time-based scoring
+- User progression
+- Non-repeating question selection
+- Monthly quiz restriction for standard users
+- Unlimited quizzes for testers and administrators
+
+### User Features
+
+- Passwordless authentication (Magic Link)
+- Quiz history
+- Personal statistics
+- Global leaderboard
+- Bug reporting
+
+### Administration
+
+- Question management
+- Bug report management
+- Comment system for bug reports
+- Role-based permissions
 
 ---
 
-## 🧠 How It Works (High-Level)
+## Getting Started
 
-1. User logs in via magic link
-2. Starts a quiz (if eligible)
-3. Answers 10 questions sequentially
-4. Difficulty adjusts after each answer
-5. Score is calculated based on correctness + speed
-6. Results are stored and surfaced via analytics and leaderboard
+This repository contains two applications:
+
+- **API** — ASP.NET Core Web API
+- **Client** — React + TypeScript frontend
+
+Each project contains its own setup instructions:
+
+- [API README](API/README.md)
+- [Client README](Client/README.md)
+
+## Documentation
+
+Additional documentation can be found in the `docs` directory, including:
+
+- Product specification
+- Feature planning
+- Supporting design notes
+
+---
+
+## Future Improvements
+
+Planned enhancements include:
+
+- Expanded question types
+- Category-specific analytics
+- Improved admin dashboard
+- Additional authentication providers
+- Enhanced reporting and visualisations
 
 ---
